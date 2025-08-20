@@ -99,7 +99,7 @@
     position: relative;
     display: block;
     width: 100%;
-    height: 100%;     /* match the 52px parent */
+    height: 100%;     /* match the parent */
     overflow: hidden; /* clip offscreen copy */
   }
 
@@ -160,51 +160,38 @@
   }
 
   /* Placeholder: black at 30% */
-.ai-email-signup-input-{{ ai_gen_id }}::placeholder {
-  color: rgba(0, 0, 0, 0.3); /* #0000004D */
-}
-.ai-email-signup-input-{{ ai_gen_id }}::-webkit-input-placeholder {
-  color: rgba(0, 0, 0, 0.3);
-}
-.ai-email-signup-input-{{ ai_gen_id }}::-moz-placeholder {
-  color: rgba(0, 0, 0, 0.3);
-  opacity: 1; /* prevent extra fading in Firefox */
-}
-
+  .ai-email-signup-input-{{ ai_gen_id }}::placeholder { color: rgba(0, 0, 0, 0.3); }
+  .ai-email-signup-input-{{ ai_gen_id }}::-webkit-input-placeholder { color: rgba(0, 0, 0, 0.3); }
+  .ai-email-signup-input-{{ ai_gen_id }}::-moz-placeholder { color: rgba(0, 0, 0, 0.3); opacity: 1; }
 {% endstyle %}
 
 <div class="ai-email-signup-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
   {% form 'customer' %}
     <div class="ai-email-signup-form-{{ ai_gen_id }}">
       {% if form.posted_successfully? %}
-      {%- comment -%} SUCCESS STATE — two-line heading + custom subtext {%- endcomment -%}
-      <h2 class="ai-email-signup-heading-{{ ai_gen_id }}">
-        <span class="success-line1-{{ ai_gen_id }}">{{ block.settings.success_heading_line1 | default: "Congrats," }}</span><br>
-        <span class="success-line2-{{ ai_gen_id }}">{{ block.settings.success_heading_line2 | default: "you’re in!" }}</span>
-      </h2>
-      <div class="ai-email-signup-subtext-{{ ai_gen_id }}">
-        {{ block.settings.success_subtext | default: "You’ll hear from us soon with early access updates, launch news, and content we only share with our list. In the meantime, follow us on socials to see the training, testing, and behind-the-scenes work that goes into every FORU protocol." }}
-      </div>
+        {%- comment -%} SUCCESS STATE — two-line heading + custom subtext {%- endcomment -%}
+        <h2 class="ai-email-signup-heading-{{ ai_gen_id }}">
+          <span class="success-line1-{{ ai_gen_id }}">{{ block.settings.success_heading_line1 | default: "Congrats," }}</span><br>
+          <span class="success-line2-{{ ai_gen_id }}">{{ block.settings.success_heading_line2 | default: "you’re in!" }}</span>
+        </h2>
+        <div class="ai-email-signup-subtext-{{ ai_gen_id }}">
+          {{ block.settings.success_subtext | default: "You’ll hear from us soon with early access updates, launch news, and content we only share with our list. In the meantime, follow us on socials to see the training, testing, and behind-the-scenes work that goes into every FORU protocol." }}
+        </div>
 
-      <script>
-        (function () {
-          // 1) Remove any hash (#something) that makes the browser scroll to the message
-          if (location.hash) {
-            history.replaceState(null, '', location.pathname + location.search);
-          }
-    
-          // 2) Defuse theme auto-focus on the message by moving focus to the top container
-          var topEl = document.getElementById('MainContent') || document.documentElement;
-          if (topEl && topEl.focus) {
-            topEl.setAttribute('tabindex', '-1');
-            topEl.focus({ preventScroll: true });
-            topEl.removeAttribute('tabindex');
-          }
-    
-          // 3) Explicitly scroll to top (in case any script tried to scroll)
-          window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-        })();
-      </script>
+        <script>
+          (function () {
+            if (location.hash) {
+              history.replaceState(null, '', location.pathname + location.search);
+            }
+            var topEl = document.getElementById('MainContent') || document.documentElement;
+            if (topEl && topEl.focus) {
+              topEl.setAttribute('tabindex', '-1');
+              topEl.focus({ preventScroll: true });
+              topEl.removeAttribute('tabindex');
+            }
+            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+          })();
+        </script>
 
       {% else %}
         {%- comment -%} NORMAL STATE {%- endcomment -%}
@@ -218,6 +205,16 @@
 
         <input type="hidden" name="contact[tags]" value="newsletter, Founding Member">
         <input type="hidden" name="customer[accepts_marketing]" value="true">
+
+        {#-- NEW: single Name field (same style as email) --#}
+        <input
+          type="text"
+          name="contact[first_name]"
+          class="ai-email-signup-input-{{ ai_gen_id }}"
+          placeholder="{{ block.settings.name_placeholder | default: 'Name' }}"
+          autocapitalize="words"
+          autocomplete="name"
+        >
 
         <input
           type="email"
@@ -264,7 +261,6 @@
     </div>
   {% endform %}
 </div>
-
 
 
 {% schema %}
