@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "favicon": "shopify://shop_images/Frame_4.png",
     "type_body_font": "inter_n4",
     "type_subheading_font": "barlow_condensed_n6",
     "type_heading_font": "barlow_condensed_n6",
