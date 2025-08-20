@@ -66,7 +66,7 @@
     border-radius: {{ block.settings.button_border_radius }}px;
     cursor: pointer;
     transition: all 0.3s ease;
-    overflow: hidden; /* ensures sliding content is clipped */
+    overflow: hidden; /* important for sliding effect */
   }
 
   .ai-email-signup-button-{{ ai_gen_id }} {
@@ -93,7 +93,7 @@
     color: {{ block.settings.button_hover_text_color }};
   }
 
-  /* Slide effect */
+  /* slide animation setup */
   .slide-wrapper {
     position: relative;
     display: inline-block;
@@ -103,11 +103,14 @@
 
   .slide-text,
   .slide-arrow {
+    position: absolute;
+    left: 0;
+    right: 0;
     display: block;
     transition: transform 0.3s ease;
   }
 
-  /* hover out */
+  /* initial states */
   .slide-text:first-child,
   .slide-arrow:first-child {
     transform: translateY(0);
@@ -117,7 +120,7 @@
     transform: translateY(100%);
   }
 
-  /* hover in */
+  /* hover states */
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:first-child,
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:first-child {
     transform: translateY(-100%);
@@ -224,6 +227,9 @@
     </div>
   {% endform %}
 </div>
+
+
+
 
 
 {% schema %}
