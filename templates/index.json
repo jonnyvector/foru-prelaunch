@@ -705,7 +705,7 @@
                     "button_gap": 4,
                     "heading_color": "#1a1c1c",
                     "text_color": "#1a1c1c",
-                    "input_background_color": "#0000000f",
+                    "input_background_color": "#7f78780f",
                     "input_text_color": "#1a1c1c",
                     "input_border_color": "#ffffff",
                     "input_focus_color": "#ffffff",
