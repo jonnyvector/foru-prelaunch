@@ -817,7 +817,7 @@
                     "icon": "price_tag",
                     "image_upload": "shopify://shop_images/ri_instagram-fill.svg",
                     "width": 32,
-                    "link": "",
+                    "link": "https://www.instagram.com/forU",
                     "open_in_new_tab": false
                   },
                   "blocks": {}
