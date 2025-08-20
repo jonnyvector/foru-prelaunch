@@ -711,7 +711,7 @@
                     "input_focus_color": "#ffffff",
                     "button_background_color": "#1a1c1c",
                     "button_text_color": "#ffffff",
-                    "button_hover_background_color": "#000000",
+                    "button_hover_background_color": "#1a1c1c",
                     "button_hover_text_color": "#ffffff",
                     "success_color": "#008060",
                     "error_color": "#d82c0d",
