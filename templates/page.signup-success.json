@@ -295,11 +295,12 @@
           ]
         }
       },
+      "custom_css": [],
       "name": "t:names.editorial",
       "settings": {
         "media_position": "right",
         "media_width": "medium",
-        "media_height": "60svh",
+        "media_height": "100svh",
         "section_width": "full-width",
         "extend_media": true,
         "color_scheme": "scheme-1",
