@@ -695,8 +695,8 @@
                   "settings": {
                     "heading": "Founding Member Status Awaits",
                     "subtext": "When you sign up today, you’re not just joining a mailing list, you’re becoming a founding member of FORU. You’ll get exclusive access to our earliest drops, invites to private events, and direct insight into how we’re building a brand for people who value quality, clarity, and long-term results.",
-                    "email_placeholder": "Enter your email address",
-                    "button_text": "Subscribe",
+                    "email_placeholder": "Your email",
+                    "button_text": "JOIN THE TRIBE",
                     "success_message": "Thanks for subscribing!",
                     "heading_size": 64,
                     "input_max_width": 400,
