@@ -491,8 +491,8 @@
                         "corner_radius": 0,
                         "padding-block-start": 0,
                         "padding-block-end": 0,
-                        "padding-inline-start": 0,
-                        "padding-inline-end": 0
+                        "padding-inline-start": 8,
+                        "padding-inline-end": 8
                       },
                       "blocks": {}
                     }
@@ -636,6 +636,10 @@
       "block_order": [
         "group_DBjkgH",
         "image_yzUJYg"
+      ],
+      "custom_css": [
+        "h2 {font-size: 64px;}",
+        "@media (max-width: 749px) {h2 {font-size: 51px; }}"
       ],
       "name": "t:names.image_with_text",
       "settings": {
