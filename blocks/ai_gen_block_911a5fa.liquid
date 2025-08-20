@@ -67,25 +67,25 @@
     border-radius: {{ block.settings.button_border_radius }}px;
     cursor: pointer;
     transition: all 0.3s ease;
-    overflow: hidden; /* ensures sliding text is clipped */
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px; /* consistent height */
   }
 
   .ai-email-signup-button-{{ ai_gen_id }} {
     flex: 1;
-    padding: 16px 24px;
+    padding: 0 24px; /* horizontal padding only */
     font-size: 22px;
     font-family: "Trim";
     font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: relative;
   }
 
   .ai-email-signup-arrow-{{ ai_gen_id }} {
     width: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: relative;
   }
 
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .ai-email-signup-button-{{ ai_gen_id }},
@@ -99,6 +99,8 @@
     position: relative;
     display: inline-block;
     overflow: hidden;
+    height: 1em; /* only one line tall */
+    line-height: 1;
   }
 
   .slide-text,
@@ -107,7 +109,7 @@
     transition: transform 0.3s ease;
   }
 
-  /* initial state */
+  /* initial */
   .slide-text:first-child,
   .slide-arrow:first-child {
     transform: translateY(0);
@@ -117,7 +119,7 @@
     transform: translateY(100%);
   }
 
-  /* hover animation */
+  /* hover */
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:first-child,
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:first-child {
     transform: translateY(-100%);
@@ -224,7 +226,6 @@
     </div>
   {% endform %}
 </div>
-
 
 
 
