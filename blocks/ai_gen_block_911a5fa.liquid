@@ -47,7 +47,6 @@
     background-color: {{ block.settings.input_background_color }};
     color: {{ block.settings.input_text_color }};
   }
-
   .ai-email-signup-input-{{ ai_gen_id }}:focus {
     outline: none;
     border-color: {{ block.settings.input_focus_color }};
@@ -67,7 +66,7 @@
     border: none;
     border-radius: {{ block.settings.button_border_radius }}px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color .3s ease, color .3s ease;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -81,10 +80,12 @@
     font-size: 22px;
     font-family: "Trim";
     font-weight: 500;
+    position: relative;
   }
 
   .ai-email-signup-arrow-{{ ai_gen_id }} {
     width: 60px;
+    position: relative;
   }
 
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .ai-email-signup-button-{{ ai_gen_id }},
@@ -93,31 +94,35 @@
     color: {{ block.settings.button_hover_text_color }};
   }
 
-  /* Slide animation */
+  /* -------- SLIDE ANIMATION (absolute layers, centered) -------- */
   .slide-wrapper {
     position: relative;
     display: block;
-    overflow: hidden;
-    height: 100%;
+    width: 100%;
+    height: 100%;     /* match the 52px parent */
+    overflow: hidden; /* clip offscreen copy */
   }
 
   .slide-text,
   .slide-arrow {
-    display: block;
-    transition: transform 0.3s ease;
-  }
-
-  /* initial */
-  .slide-text:first-child,
-  .slide-arrow:first-child {
+    position: absolute;
+    inset: 0;                /* top:0 right:0 bottom:0 left:0 */
+    display: flex;
+    align-items: center;     /* vertical centering */
+    justify-content: center; /* horizontal centering */
+    transition: transform .32s cubic-bezier(.22,.61,.36,1);
+    will-change: transform;
+    backface-visibility: hidden;
     transform: translateY(0);
   }
+
+  /* second copy starts just below the container height */
   .slide-text:last-child,
   .slide-arrow:last-child {
     transform: translateY(100%);
   }
 
-  /* hover */
+  /* on hover they swap */
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:first-child,
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:first-child {
     transform: translateY(-100%);
@@ -130,6 +135,7 @@
   .ai-email-signup-arrow-icon-{{ ai_gen_id }} {
     width: 20px;
     height: 20px;
+    display: block;
   }
 
   .ai-email-signup-success-{{ ai_gen_id }} {
@@ -137,7 +143,6 @@
     margin-top: 16px;
     font-size: 14px;
   }
-
   .ai-email-signup-error-{{ ai_gen_id }} {
     color: {{ block.settings.error_color }};
     margin-top: 16px;
@@ -148,7 +153,6 @@
     .ai-email-signup-heading-{{ ai_gen_id }} {
       font-size: {{ block.settings.heading_size | times: 0.8 }}px;
     }
-
     .ai-email-signup-button-wrapper-{{ ai_gen_id }} {
       width: 100%;
       max-width: {{ block.settings.input_max_width }}px;
@@ -178,10 +182,10 @@
         autocomplete="email"
         {% if form.errors %}
           aria-invalid="true"
-          aria-describedby="ai-email-signup-error-{{ ai_gen_id }}
+          aria-describedby="ai-email-signup-error-{{ ai_gen_id }}"
         {% endif %}
         {% if form.posted_successfully? %}
-          aria-describedby="ai-email-signup-success-{{ ai_gen_id }}
+          aria-describedby="ai-email-signup-success-{{ ai_gen_id }}"
         {% endif %}
         placeholder="{{ block.settings.email_placeholder }}"
         required
@@ -194,6 +198,7 @@
             <span class="slide-text">{{ block.settings.button_text }}</span>
           </span>
         </button>
+
         <div class="ai-email-signup-arrow-{{ ai_gen_id }}">
           <span class="slide-wrapper">
             <span class="slide-arrow">
@@ -215,7 +220,6 @@
           {{ form.errors.messages.email }}
         </div>
       {% endif %}
-
       {% if form.posted_successfully? %}
         <div id="ai-email-signup-success-{{ ai_gen_id }}" class="ai-email-signup-success-{{ ai_gen_id }}">
           {{ block.settings.success_message }}
