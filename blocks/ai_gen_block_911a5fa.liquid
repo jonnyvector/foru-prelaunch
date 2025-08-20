@@ -128,10 +128,10 @@
   (function () {
     const root = document.currentScript.previousElementSibling; // the wrapping div above
     if (!root) return;
-    const sel = '.ai-email-signup-{{ ai_gen_id }} form';
-    const form = root.querySelector(sel);
+    const form = root.querySelector('.ai-email-signup-{{ ai_gen_id }} form');
     if (!form) return;
 
+    // Build success URL and preserve any UTM params
     const successURL = (function () {
       const u = new URL('/pages/signup-success', window.location.origin);
       const params = new URLSearchParams(window.location.search);
@@ -139,36 +139,45 @@
       return u.toString();
     })();
 
+    // We'll POST to the current page so the server re-renders this block (and our meta marker)
+    const postURL = window.location.pathname + window.location.search;
+
     function nativeSubmitFallback() {
       try { HTMLFormElement.prototype.submit.call(form); } catch (e) { form.submit(); }
     }
 
     form.addEventListener('submit', function (e) {
-      // Progressive enhancement: only AJAX if fetch available
-      if (!window.fetch || !window.DOMParser) return;
+      if (!window.fetch || !window.DOMParser) return; // graceful fallback
       e.preventDefault();
 
       const fd = new FormData(form);
-      // Disable buttons while submitting
       const buttons = form.querySelectorAll('button[type="submit"]');
       buttons.forEach(b => b.disabled = true);
 
-      fetch(form.action, {
-        method: form.method || 'POST',
+      fetch(postURL, {
+        method: 'POST',
         body: fd,
         credentials: 'same-origin',
-        headers: { 'Accept': 'text/html' }
+        headers: { 'Accept': 'text/html' },
+        redirect: 'follow'
       })
-      .then(res => res.text())
-      .then(html => {
+      .then(async (res) => {
+        const html = await res.text();
+        const successInURL = res.url && (res.url.indexOf('customer_posted=true') > -1 || res.url.indexOf('contact_posted=true') > -1);
+
         const doc = new DOMParser().parseFromString(html, 'text/html');
-        const isSuccess = !!doc.querySelector('meta[name="newsletter-success"][content="true"]');
-        if (isSuccess) {
-          window.location.href = successURL; // clean, no flicker
+        const successMeta = !!doc.querySelector('meta[name="newsletter-success"][content="true"]');
+
+        if (successInURL || successMeta) {
+          window.location.assign(successURL); // smooth, no flicker
           return;
         }
-        // Show server validation error inline (reusing server-rendered message if present)
-        const serverErr = doc.querySelector('#ai-email-signup-error-{{ ai_gen_id }}');
+
+        // Show server error (prefer server-rendered message if present)
+        const serverErr =
+          doc.querySelector('#ai-email-signup-error-{{ ai_gen_id }}') ||
+          doc.querySelector('[role="alert"], .form__message, [data-form-status]');
+
         let errBox = root.querySelector('#ai-email-signup-error-{{ ai_gen_id }}');
         if (!errBox) {
           errBox = document.createElement('div');
@@ -179,7 +188,7 @@
         errBox.innerHTML = serverErr ? serverErr.innerHTML : 'Please enter a valid email.';
       })
       .catch(() => {
-        // If AJAX fails for any reason, fall back to normal submission
+        // Network or fetch error: fall back to native submit
         nativeSubmitFallback();
       })
       .finally(() => {
