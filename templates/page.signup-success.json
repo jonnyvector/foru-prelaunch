@@ -142,9 +142,9 @@
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
-                    "type_preset": "h3",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
+                    "type_preset": "custom",
+                    "font": "var(--font-heading--family)",
+                    "font_size": "3.5rem",
                     "line_height": "normal",
                     "letter_spacing": "normal",
                     "case": "none",
@@ -163,7 +163,7 @@
                 "text_pQUJmd": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Made with care and unconditionally loved by our customers, this signature bestseller exceeds all expectations.</p>",
+                    "text": "<p>You’ll hear from us soon with early access updates, launch news, and content we only share with our list. In the meantime, follow us on socials to see the training, testing, and behind-the-scenes work that goes into every FORU protocol.</p>",
                     "width": "fit-content",
                     "max_width": "narrow",
                     "alignment": "left",
