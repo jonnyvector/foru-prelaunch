@@ -704,7 +704,7 @@
                     "button_max_width": 400,
                     "button_gap": 4,
                     "heading_color": "#1a1c1c",
-                    "text_color": "#666666",
+                    "text_color": "#1a1c1c",
                     "input_background_color": "#0000000f",
                     "input_text_color": "#1a1c1c",
                     "input_border_color": "#ffffff",
