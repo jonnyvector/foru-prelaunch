@@ -169,8 +169,15 @@
     <div class="ai-email-signup-subtext-{{ ai_gen_id }}">{{ block.settings.subtext }}</div>
   {% endif %}
 
-  {% form 'contact' %}
+  {%- comment -%}
+    Use newsletter 'customer' form so emails go to Customers (accepts marketing).
+    We tag them and default consent to true.
+  {%- endcomment -%}
+  {% form 'customer' %}
     <div class="ai-email-signup-form-{{ ai_gen_id }}">
+      <input type="hidden" name="contact[tags]" value="newsletter, Founding Member">
+      <input type="hidden" name="customer[accepts_marketing]" value="true">
+
       <input
         type="email"
         name="contact[email]"
@@ -184,9 +191,6 @@
           aria-invalid="true"
           aria-describedby="ai-email-signup-error-{{ ai_gen_id }}"
         {% endif %}
-        {% if form.posted_successfully? %}
-          aria-describedby="ai-email-signup-success-{{ ai_gen_id }}"
-        {% endif %}
         placeholder="{{ block.settings.email_placeholder }}"
         required
       >
@@ -199,7 +203,8 @@
           </span>
         </button>
 
-        <div class="ai-email-signup-arrow-{{ ai_gen_id }}">
+        <!-- Make arrow a submit button too -->
+        <button type="submit" class="ai-email-signup-arrow-{{ ai_gen_id }}" aria-label="Submit email">
           <span class="slide-wrapper">
             <span class="slide-arrow">
               <svg class="ai-email-signup-arrow-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -212,7 +217,7 @@
               </svg>
             </span>
           </span>
-        </div>
+        </button>
       </div>
 
       {% if form.errors %}
@@ -220,15 +225,27 @@
           {{ form.errors.messages.email }}
         </div>
       {% endif %}
+
+      {%- comment -%}
+        On true success (server-side), redirect to your Thank You page
+        and preserve any UTM params.
+      {%- endcomment -%}
       {% if form.posted_successfully? %}
-        <div id="ai-email-signup-success-{{ ai_gen_id }}" class="ai-email-signup-success-{{ ai_gen_id }}">
-          {{ block.settings.success_message }}
-        </div>
+        <script>
+          (function () {
+            var success = new URL('/pages/signup-success', window.location.origin);
+            var params = new URLSearchParams(window.location.search);
+            if (params.toString()) success.search = params.toString();
+            window.location.replace(success.toString());
+          })();
+        </script>
+        <noscript>
+          <meta http-equiv="refresh" content="0; url=/pages/signup-success">
+        </noscript>
       {% endif %}
     </div>
   {% endform %}
 </div>
-
 
 {% schema %}
 {
