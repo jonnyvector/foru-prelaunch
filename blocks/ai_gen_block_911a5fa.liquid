@@ -69,7 +69,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 52px; /* consistent height */
+    height: 64px; /* consistent height */
   }
 
   .ai-email-signup-button-{{ ai_gen_id }} {
@@ -156,6 +156,19 @@
       max-width: {{ block.settings.input_max_width }}px;
     }
   }
+
+  /* Placeholder: black at 30% */
+.ai-email-signup-input-{{ ai_gen_id }}::placeholder {
+  color: rgba(0, 0, 0, 0.3); /* #0000004D */
+}
+.ai-email-signup-input-{{ ai_gen_id }}::-webkit-input-placeholder {
+  color: rgba(0, 0, 0, 0.3);
+}
+.ai-email-signup-input-{{ ai_gen_id }}::-moz-placeholder {
+  color: rgba(0, 0, 0, 0.3);
+  opacity: 1; /* prevent extra fading in Firefox */
+}
+
 {% endstyle %}
 
 <div class="ai-email-signup-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
