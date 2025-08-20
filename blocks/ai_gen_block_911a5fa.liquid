@@ -92,43 +92,44 @@
     background-color: {{ block.settings.button_hover_background_color }};
     color: {{ block.settings.button_hover_text_color }};
   }
+/* Slide animation setup */
+.slide-wrapper {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1; /* keeps things tight */
+  height: 100%;   /* inherit the button's height */
+}
 
-  /* slide animation setup */
-  .slide-wrapper {
-    position: relative;
-    display: inline-block;
-    overflow: hidden;
-    height: 1em;
-  }
+.slide-text,
+.slide-arrow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  transition: transform 0.3s ease;
+}
 
-  .slide-text,
-  .slide-arrow {
-    position: absolute;
-    left: 0;
-    right: 0;
-    display: block;
-    transition: transform 0.3s ease;
-  }
+/* initial states */
+.slide-text:first-child,
+.slide-arrow:first-child {
+  transform: translateY(0);
+}
+.slide-text:last-child,
+.slide-arrow:last-child {
+  transform: translateY(100%);
+}
 
-  /* initial states */
-  .slide-text:first-child,
-  .slide-arrow:first-child {
-    transform: translateY(0);
-  }
-  .slide-text:last-child,
-  .slide-arrow:last-child {
-    transform: translateY(100%);
-  }
+/* hover states */
+.ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:first-child,
+.ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:first-child {
+  transform: translateY(-100%);
+}
+.ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:last-child,
+.ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:last-child {
+  transform: translateY(0);
+}
 
-  /* hover states */
-  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:first-child,
-  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:first-child {
-    transform: translateY(-100%);
-  }
-  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:last-child,
-  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:last-child {
-    transform: translateY(0);
-  }
 
   .ai-email-signup-arrow-icon-{{ ai_gen_id }} {
     width: 20px;
