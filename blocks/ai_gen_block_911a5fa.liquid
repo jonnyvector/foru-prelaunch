@@ -10,169 +10,65 @@
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
 {% style %}
-  .ai-email-signup-{{ ai_gen_id }} {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    text-align: center;
-  }
+  .ai-email-signup-{{ ai_gen_id }} { max-width: 600px; margin: 0 auto; padding: 40px 20px; text-align: center; }
 
-  .ai-email-signup-heading-{{ ai_gen_id }} {
-    font-size: {{ block.settings.heading_size }}px;
-    color: {{ block.settings.heading_color }};
-    margin: 0 0 24px 0;
-  }
+  .ai-email-signup-heading-{{ ai_gen_id }} { font-size: {{ block.settings.heading_size }}px; color: {{ block.settings.heading_color }}; margin: 0 0 24px 0; }
 
-  .ai-email-signup-subtext-{{ ai_gen_id }} {
-    font-size: 16px;
-    color: {{ block.settings.text_color }};
-    margin: 0 0 32px 0;
-    line-height: 1.5;
-  }
+  .ai-email-signup-subtext-{{ ai_gen_id }} { font-size: 16px; color: {{ block.settings.text_color }}; margin: 0 0 32px 0; line-height: 1.5; }
 
-  .ai-email-signup-form-{{ ai_gen_id }} {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    align-items: center;
-  }
+  .ai-email-signup-form-{{ ai_gen_id }} { display: flex; flex-direction: column; gap: 16px; align-items: center; }
 
   .ai-email-signup-input-{{ ai_gen_id }} {
-    width: 100%;
-    max-width: {{ block.settings.input_max_width }}px;
-    padding: 16px 20px;
-    border: 2px solid {{ block.settings.input_border_color }};
-    border-radius: {{ block.settings.input_border_radius }}px;
-    font-size: 16px;
-    background-color: {{ block.settings.input_background_color }};
-    color: {{ block.settings.input_text_color }};
+    width: 100%; max-width: {{ block.settings.input_max_width }}px; padding: 16px 20px;
+    border: 2px solid {{ block.settings.input_border_color }}; border-radius: {{ block.settings.input_border_radius }}px;
+    font-size: 16px; background-color: {{ block.settings.input_background_color }}; color: {{ block.settings.input_text_color }};
   }
-  .ai-email-signup-input-{{ ai_gen_id }}:focus {
-    outline: none;
-    border-color: {{ block.settings.input_focus_color }};
-  }
+  .ai-email-signup-input-{{ ai_gen_id }}:focus { outline: none; border-color: {{ block.settings.input_focus_color }}; }
 
-  .ai-email-signup-button-wrapper-{{ ai_gen_id }} {
-    display: flex;
-    width: {{ block.settings.button_width }}px;
-    max-width: {{ block.settings.button_max_width }}px;
-    gap: {{ block.settings.button_gap }}px;
-  }
+  .ai-email-signup-button-wrapper-{{ ai_gen_id }} { display: flex; width: {{ block.settings.button_width }}px; max-width: {{ block.settings.button_max_width }}px; gap: {{ block.settings.button_gap }}px; }
 
-  .ai-email-signup-button-{{ ai_gen_id }},
-  .ai-email-signup-arrow-{{ ai_gen_id }} {
-    background-color: {{ block.settings.button_background_color }};
-    color: {{ block.settings.button_text_color }};
-    border: none;
-    border-radius: {{ block.settings.button_border_radius }}px;
-    cursor: pointer;
+  .ai-email-signup-button-{{ ai_gen_id }}, .ai-email-signup-arrow-{{ ai_gen_id }} {
+    background-color: {{ block.settings.button_background_color }}; color: {{ block.settings.button_text_color }};
+    border: none; border-radius: {{ block.settings.button_border_radius }}px; cursor: pointer;
     transition: background-color .3s ease, color .3s ease;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 52px; /* consistent height */
+    overflow: hidden; display: flex; align-items: center; justify-content: center; height: 52px;
   }
-
-  .ai-email-signup-button-{{ ai_gen_id }} {
-    flex: 1;
-    padding: 0 24px; /* horizontal padding only */
-    font-size: 22px;
-    font-family: "Trim";
-    font-weight: 500;
-    position: relative;
-  }
-
-  .ai-email-signup-arrow-{{ ai_gen_id }} {
-    width: 60px;
-    position: relative;
-  }
+  .ai-email-signup-button-{{ ai_gen_id }} { flex: 1; padding: 0 24px; font-size: 22px; font-family: "Trim"; font-weight: 500; position: relative; }
+  .ai-email-signup-arrow-{{ ai_gen_id }} { width: 60px; position: relative; }
 
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .ai-email-signup-button-{{ ai_gen_id }},
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .ai-email-signup-arrow-{{ ai_gen_id }} {
-    background-color: {{ block.settings.button_hover_background_color }};
-    color: {{ block.settings.button_hover_text_color }};
+    background-color: {{ block.settings.button_hover_background_color }}; color: {{ block.settings.button_hover_text_color }};
   }
 
-  /* -------- SLIDE ANIMATION (absolute layers, centered) -------- */
-  .slide-wrapper {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: 100%;     /* match the 52px parent */
-    overflow: hidden; /* clip offscreen copy */
+  /* Slide animation (absolute layers) */
+  .slide-wrapper { position: relative; display: block; width: 100%; height: 100%; overflow: hidden; }
+  .slide-text, .slide-arrow {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    transition: transform .32s cubic-bezier(.22,.61,.36,1); will-change: transform; backface-visibility: hidden; transform: translateY(0);
   }
-
-  .slide-text,
-  .slide-arrow {
-    position: absolute;
-    inset: 0;                /* top:0 right:0 bottom:0 left:0 */
-    display: flex;
-    align-items: center;     /* vertical centering */
-    justify-content: center; /* horizontal centering */
-    transition: transform .32s cubic-bezier(.22,.61,.36,1);
-    will-change: transform;
-    backface-visibility: hidden;
-    transform: translateY(0);
-  }
-
-  /* second copy starts just below the container height */
-  .slide-text:last-child,
-  .slide-arrow:last-child {
-    transform: translateY(100%);
-  }
-
-  /* on hover they swap */
+  .slide-text:last-child, .slide-arrow:last-child { transform: translateY(100%); }
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:first-child,
-  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:first-child {
-    transform: translateY(-100%);
-  }
+  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:first-child { transform: translateY(-100%); }
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:last-child,
-  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:last-child {
-    transform: translateY(0);
-  }
+  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:last-child { transform: translateY(0); }
 
-  .ai-email-signup-arrow-icon-{{ ai_gen_id }} {
-    width: 20px;
-    height: 20px;
-    display: block;
-  }
+  .ai-email-signup-arrow-icon-{{ ai_gen_id }} { width: 20px; height: 20px; display: block; }
 
-  .ai-email-signup-success-{{ ai_gen_id }} {
-    color: {{ block.settings.success_color }};
-    margin-top: 16px;
-    font-size: 14px;
-  }
-  .ai-email-signup-error-{{ ai_gen_id }} {
-    color: {{ block.settings.error_color }};
-    margin-top: 16px;
-    font-size: 14px;
-  }
+  .ai-email-signup-success-{{ ai_gen_id }} { color: {{ block.settings.success_color }}; margin-top: 16px; font-size: 14px; }
+  .ai-email-signup-error-{{ ai_gen_id }} { color: {{ block.settings.error_color }}; margin-top: 16px; font-size: 14px; }
 
-  @media screen and (max-width: 749px) {
-    .ai-email-signup-heading-{{ ai_gen_id }} {
-      font-size: {{ block.settings.heading_size | times: 0.8 }}px;
-    }
-    .ai-email-signup-button-wrapper-{{ ai_gen_id }} {
-      width: 100%;
-      max-width: {{ block.settings.input_max_width }}px;
-    }
+  @media (max-width: 749px) {
+    .ai-email-signup-heading-{{ ai_gen_id }} { font-size: {{ block.settings.heading_size | times: 0.8 }}px; }
+    .ai-email-signup-button-wrapper-{{ ai_gen_id }} { width: 100%; max-width: {{ block.settings.input_max_width }}px; }
   }
 {% endstyle %}
 
 <div class="ai-email-signup-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
-  {% if block.settings.heading != blank %}
-    <h2 class="ai-email-signup-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
-  {% endif %}
+  {% if block.settings.heading != blank %}<h2 class="ai-email-signup-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>{% endif %}
+  {% if block.settings.subtext != blank %}<div class="ai-email-signup-subtext-{{ ai_gen_id }}">{{ block.settings.subtext }}</div>{% endif %}
 
-  {% if block.settings.subtext != blank %}
-    <div class="ai-email-signup-subtext-{{ ai_gen_id }}">{{ block.settings.subtext }}</div>
-  {% endif %}
-
-  {%- comment -%}
-    Use newsletter 'customer' form so emails go to Customers (accepts marketing).
-    We tag them and default consent to true.
-  {%- endcomment -%}
+  {%- comment -%} Newsletter form so subscribers land in Customers (accepts marketing) {%- endcomment -%}
   {% form 'customer' %}
     <div class="ai-email-signup-form-{{ ai_gen_id }}">
       <input type="hidden" name="contact[tags]" value="newsletter, Founding Member">
@@ -184,13 +80,8 @@
         class="ai-email-signup-input-{{ ai_gen_id }}"
         value="{{ form.email }}"
         aria-required="true"
-        autocorrect="off"
-        autocapitalize="off"
-        autocomplete="email"
-        {% if form.errors %}
-          aria-invalid="true"
-          aria-describedby="ai-email-signup-error-{{ ai_gen_id }}"
-        {% endif %}
+        autocorrect="off" autocapitalize="off" autocomplete="email"
+        {% if form.errors %} aria-invalid="true" aria-describedby="ai-email-signup-error-{{ ai_gen_id }}"{% endif %}
         placeholder="{{ block.settings.email_placeholder }}"
         required
       >
@@ -203,7 +94,7 @@
           </span>
         </button>
 
-        <!-- Make arrow a submit button too -->
+        <!-- Arrow also submits -->
         <button type="submit" class="ai-email-signup-arrow-{{ ai_gen_id }}" aria-label="Submit email">
           <span class="slide-wrapper">
             <span class="slide-arrow">
@@ -221,31 +112,83 @@
       </div>
 
       {% if form.errors %}
-        <div id="ai-email-signup-error-{{ ai_gen_id }}" class="ai-email-signup-error-{{ ai_gen_id }}">
-          {{ form.errors.messages.email }}
-        </div>
+        <div id="ai-email-signup-error-{{ ai_gen_id }}" class="ai-email-signup-error-{{ ai_gen_id }}">{{ form.errors.messages.email }}</div>
       {% endif %}
 
       {%- comment -%}
-        On true success (server-side), redirect to your Thank You page
-        and preserve any UTM params.
+        These meta tags are only present in the HTML Shopify would render *after* submit.
+        Our JS (below) fetches that HTML invisibly and checks for this marker to decide whether to redirect.
       {%- endcomment -%}
-      {% if form.posted_successfully? %}
-        <script>
-          (function () {
-            var success = new URL('/pages/signup-success', window.location.origin);
-            var params = new URLSearchParams(window.location.search);
-            if (params.toString()) success.search = params.toString();
-            window.location.replace(success.toString());
-          })();
-        </script>
-        <noscript>
-          <meta http-equiv="refresh" content="0; url=/pages/signup-success">
-        </noscript>
-      {% endif %}
+      {% if form.posted_successfully? %}<meta name="newsletter-success" content="true">{% endif %}
     </div>
   {% endform %}
 </div>
+
+<script>
+  (function () {
+    const root = document.currentScript.previousElementSibling; // the wrapping div above
+    if (!root) return;
+    const sel = '.ai-email-signup-{{ ai_gen_id }} form';
+    const form = root.querySelector(sel);
+    if (!form) return;
+
+    const successURL = (function () {
+      const u = new URL('/pages/signup-success', window.location.origin);
+      const params = new URLSearchParams(window.location.search);
+      if (params.toString()) u.search = params.toString();
+      return u.toString();
+    })();
+
+    function nativeSubmitFallback() {
+      try { HTMLFormElement.prototype.submit.call(form); } catch (e) { form.submit(); }
+    }
+
+    form.addEventListener('submit', function (e) {
+      // Progressive enhancement: only AJAX if fetch available
+      if (!window.fetch || !window.DOMParser) return;
+      e.preventDefault();
+
+      const fd = new FormData(form);
+      // Disable buttons while submitting
+      const buttons = form.querySelectorAll('button[type="submit"]');
+      buttons.forEach(b => b.disabled = true);
+
+      fetch(form.action, {
+        method: form.method || 'POST',
+        body: fd,
+        credentials: 'same-origin',
+        headers: { 'Accept': 'text/html' }
+      })
+      .then(res => res.text())
+      .then(html => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const isSuccess = !!doc.querySelector('meta[name="newsletter-success"][content="true"]');
+        if (isSuccess) {
+          window.location.href = successURL; // clean, no flicker
+          return;
+        }
+        // Show server validation error inline (reusing server-rendered message if present)
+        const serverErr = doc.querySelector('#ai-email-signup-error-{{ ai_gen_id }}');
+        let errBox = root.querySelector('#ai-email-signup-error-{{ ai_gen_id }}');
+        if (!errBox) {
+          errBox = document.createElement('div');
+          errBox.id = 'ai-email-signup-error-{{ ai_gen_id }}';
+          errBox.className = 'ai-email-signup-error-{{ ai_gen_id }}';
+          form.appendChild(errBox);
+        }
+        errBox.innerHTML = serverErr ? serverErr.innerHTML : 'Please enter a valid email.';
+      })
+      .catch(() => {
+        // If AJAX fails for any reason, fall back to normal submission
+        nativeSubmitFallback();
+      })
+      .finally(() => {
+        buttons.forEach(b => b.disabled = false);
+      });
+    }, { passive: false });
+  })();
+</script>
+
 
 {% schema %}
 {
