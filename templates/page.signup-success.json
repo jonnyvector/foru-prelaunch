@@ -417,7 +417,7 @@
                     "align_baseline": false,
                     "horizontal_alignment_flex_direction_column": "center",
                     "vertical_alignment_flex_direction_column": "center",
-                    "gap": 12,
+                    "gap": 24,
                     "width": "fill",
                     "custom_width": 100,
                     "width_mobile": "fill",
@@ -448,11 +448,11 @@
                       "type": "text",
                       "name": "t:names.heading",
                       "settings": {
-                        "text": "<h2>Our signature product.</h2>",
+                        "text": "<h2>Congrats, <br/>you’re in!</h2>",
                         "width": "fit-content",
                         "max_width": "normal",
                         "alignment": "left",
-                        "type_preset": "h3",
+                        "type_preset": "h2",
                         "font": "var(--font-body--family)",
                         "font_size": "1rem",
                         "line_height": "normal",
@@ -473,9 +473,9 @@
                     "text_9mXMRE": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>Made with care and unconditionally loved by our customers, this signature bestseller exceeds all expectations.</p>",
+                        "text": "<p>You’ll hear from us soon with early access updates, launch news, and content we only share with our list. In the meantime, follow us on socials to see the training, testing, and behind-the-scenes work that goes into every FORU protocol.</p>",
                         "width": "fit-content",
-                        "max_width": "narrow",
+                        "max_width": "normal",
                         "alignment": "left",
                         "type_preset": "rte",
                         "font": "var(--font-body--family)",
@@ -551,6 +551,7 @@
                   "name": "t:names.icon",
                   "settings": {
                     "icon": "price_tag",
+                    "image_upload": "shopify://shop_images/ri_instagram-fill.svg",
                     "width": 24,
                     "link": "",
                     "open_in_new_tab": false
@@ -562,6 +563,7 @@
                   "name": "t:names.icon",
                   "settings": {
                     "icon": "price_tag",
+                    "image_upload": "shopify://shop_images/ic_baseline-tiktok.svg",
                     "width": 24,
                     "link": "",
                     "open_in_new_tab": false
@@ -573,6 +575,7 @@
                   "name": "t:names.icon",
                   "settings": {
                     "icon": "price_tag",
+                    "image_upload": "shopify://shop_images/mdi_youtube.svg",
                     "width": 24,
                     "link": "",
                     "open_in_new_tab": false
@@ -584,17 +587,7 @@
                   "name": "t:names.icon",
                   "settings": {
                     "icon": "price_tag",
-                    "width": 24,
-                    "link": "",
-                    "open_in_new_tab": false
-                  },
-                  "blocks": {}
-                },
-                "icon_gXt4Pa": {
-                  "type": "icon",
-                  "name": "t:names.icon",
-                  "settings": {
-                    "icon": "price_tag",
+                    "image_upload": "shopify://shop_images/ic_baseline-facebook.svg",
                     "width": 24,
                     "link": "",
                     "open_in_new_tab": false
@@ -606,8 +599,7 @@
                 "icon_9g8nbR",
                 "icon_kfQpY9",
                 "icon_EDXCTB",
-                "icon_XnMpky",
-                "icon_gXt4Pa"
+                "icon_XnMpky"
               ]
             }
           },
