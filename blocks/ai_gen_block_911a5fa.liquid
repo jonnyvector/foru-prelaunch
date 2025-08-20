@@ -164,7 +164,7 @@
       {% if form.posted_successfully? %}
       {%- comment -%} SUCCESS STATE — two-line heading + custom subtext {%- endcomment -%}
       <h2 class="ai-email-signup-heading-{{ ai_gen_id }}">
-        <span class="success-line1-{{ ai_gen_id }}">{{ block.settings.success_heading_line1 | default: "Congrats" }}</span><br>
+        <span class="success-line1-{{ ai_gen_id }}">{{ block.settings.success_heading_line1 | default: "Congrats," }}</span><br>
         <span class="success-line2-{{ ai_gen_id }}">{{ block.settings.success_heading_line2 | default: "you’re in!" }}</span>
       </h2>
       <div class="ai-email-signup-subtext-{{ ai_gen_id }}">
