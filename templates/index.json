@@ -699,7 +699,7 @@
                     "button_text": "Join the tribe",
                     "success_message": "Thanks for subscribing!",
                     "heading_size": 64,
-                    "input_max_width": 400,
+                    "input_max_width": 480,
                     "button_width": 280,
                     "button_max_width": 400,
                     "button_gap": 4,
