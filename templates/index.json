@@ -828,8 +828,8 @@
                   "settings": {
                     "icon": "price_tag",
                     "image_upload": "shopify://shop_images/ic_baseline-tiktok.svg",
-                    "width": 24,
-                    "link": "",
+                    "width": 32,
+                    "link": "https://www.tiktok.com/@forulabs",
                     "open_in_new_tab": false
                   },
                   "blocks": {}
