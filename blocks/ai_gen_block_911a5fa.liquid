@@ -81,12 +81,10 @@
     font-size: 22px;
     font-family: "Trim";
     font-weight: 500;
-    position: relative;
   }
 
   .ai-email-signup-arrow-{{ ai_gen_id }} {
     width: 60px;
-    position: relative;
   }
 
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .ai-email-signup-button-{{ ai_gen_id }},
@@ -100,19 +98,12 @@
     position: relative;
     display: block;
     overflow: hidden;
-    height: 100%; /* match parent height */
+    height: 100%;
   }
 
   .slide-text,
   .slide-arrow {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
     transition: transform 0.3s ease;
   }
 
@@ -233,7 +224,6 @@
     </div>
   {% endform %}
 </div>
-
 
 
 {% schema %}
