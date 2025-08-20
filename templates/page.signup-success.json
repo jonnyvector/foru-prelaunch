@@ -295,6 +295,7 @@
           ]
         }
       },
+      "disabled": true,
       "custom_css": [
         ".h2 > p {font-size: 64px;}"
       ],
@@ -614,12 +615,12 @@
           "settings": {
             "image": "shopify://shop_images/image_22.png",
             "link": "",
-            "image_ratio": "square",
+            "image_ratio": "adapt",
             "width": "fill",
             "custom_width": 100,
             "width_mobile": "fill",
             "custom_width_mobile": 100,
-            "height": "fit",
+            "height": "fill",
             "border": "none",
             "border_width": 1,
             "border_opacity": 100,
@@ -661,8 +662,8 @@
         "overlay_color": "#00000026",
         "overlay_style": "solid",
         "gradient_direction": "to top",
-        "padding-block-start": 40,
-        "padding-block-end": 40
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     }
   },
