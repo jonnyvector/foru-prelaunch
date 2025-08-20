@@ -171,6 +171,26 @@
         {{ block.settings.success_subtext | default: "You’ll hear from us soon with early access updates, launch news, and content we only share with our list. In the meantime, follow us on socials to see the training, testing, and behind-the-scenes work that goes into every FORU protocol." }}
       </div>
 
+      <script>
+        (function () {
+          // 1) Remove any hash (#something) that makes the browser scroll to the message
+          if (location.hash) {
+            history.replaceState(null, '', location.pathname + location.search);
+          }
+    
+          // 2) Defuse theme auto-focus on the message by moving focus to the top container
+          var topEl = document.getElementById('MainContent') || document.documentElement;
+          if (topEl && topEl.focus) {
+            topEl.setAttribute('tabindex', '-1');
+            topEl.focus({ preventScroll: true });
+            topEl.removeAttribute('tabindex');
+          }
+    
+          // 3) Explicitly scroll to top (in case any script tried to scroll)
+          window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        })();
+      </script>
+
       {% else %}
         {%- comment -%} NORMAL STATE {%- endcomment -%}
         {% if block.settings.heading != blank %}
