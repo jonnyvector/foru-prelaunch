@@ -140,7 +140,7 @@
                   "settings": {
                     "text": "<p>Congrats, <br/>you’re in!</p>",
                     "width": "fit-content",
-                    "max_width": "normal",
+                    "max_width": "none",
                     "alignment": "left",
                     "type_preset": "custom",
                     "font": "var(--font-heading--family)",
@@ -165,7 +165,7 @@
                   "settings": {
                     "text": "<p>You’ll hear from us soon with early access updates, launch news, and content we only share with our list. In the meantime, follow us on socials to see the training, testing, and behind-the-scenes work that goes into every FORU protocol.</p>",
                     "width": "fit-content",
-                    "max_width": "narrow",
+                    "max_width": "normal",
                     "alignment": "left",
                     "type_preset": "rte",
                     "font": "var(--font-body--family)",
@@ -295,7 +295,9 @@
           ]
         }
       },
-      "custom_css": [],
+      "custom_css": [
+        ".h2 {font-size: 64px;}"
+      ],
       "name": "t:names.editorial",
       "settings": {
         "media_position": "right",
