@@ -708,7 +708,7 @@
                     "input_background_color": "#0000000f",
                     "input_text_color": "#000000",
                     "input_border_color": "#ffffff",
-                    "input_focus_color": "#000f9f",
+                    "input_focus_color": "#ffffff",
                     "button_background_color": "#1a1c1c",
                     "button_text_color": "#ffffff",
                     "button_hover_background_color": "#000000",
