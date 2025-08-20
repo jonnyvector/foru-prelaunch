@@ -11,7 +11,7 @@
   .ai-email-signup-{{ ai_gen_id }} {
     max-width: 600px;
     margin: 0 auto;
-    padding:40px 20px;
+    padding: 40px 20px;
     text-align: center;
   }
 
@@ -58,36 +58,73 @@
     gap: {{ block.settings.button_gap }}px;
   }
 
-  .ai-email-signup-button-{{ ai_gen_id }} {
-    flex: 1;
-    padding: 16px 24px;
-    background-color: {{ block.settings.button_background_color }};
-    color: {{ block.settings.button_text_color }};
-    border: none;
-    border-radius: {{ block.settings.button_border_radius }}px;
-    font-size: 22px;
-    font-family: "Trim";
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;}
-
+  .ai-email-signup-button-{{ ai_gen_id }},
   .ai-email-signup-arrow-{{ ai_gen_id }} {
-    width: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background-color: {{ block.settings.button_background_color }};
     color: {{ block.settings.button_text_color }};
     border: none;
     border-radius: {{ block.settings.button_border_radius }}px;
     cursor: pointer;
     transition: all 0.3s ease;
+    overflow: hidden; /* ensures sliding content is clipped */
+  }
+
+  .ai-email-signup-button-{{ ai_gen_id }} {
+    flex: 1;
+    padding: 16px 24px;
+    font-size: 22px;
+    font-family: "Trim";
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-email-signup-arrow-{{ ai_gen_id }} {
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .ai-email-signup-button-{{ ai_gen_id }},
   .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .ai-email-signup-arrow-{{ ai_gen_id }} {
     background-color: {{ block.settings.button_hover_background_color }};
     color: {{ block.settings.button_hover_text_color }};
+  }
+
+  /* Slide effect */
+  .slide-wrapper {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    height: 1em;
+  }
+
+  .slide-text,
+  .slide-arrow {
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  /* hover out */
+  .slide-text:first-child,
+  .slide-arrow:first-child {
+    transform: translateY(0);
+  }
+  .slide-text:last-child,
+  .slide-arrow:last-child {
+    transform: translateY(100%);
+  }
+
+  /* hover in */
+  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:first-child,
+  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:first-child {
+    transform: translateY(-100%);
+  }
+  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:last-child,
+  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:last-child {
+    transform: translateY(0);
   }
 
   .ai-email-signup-arrow-icon-{{ ai_gen_id }} {
@@ -141,10 +178,10 @@
         autocomplete="email"
         {% if form.errors %}
           aria-invalid="true"
-          aria-describedby="ai-email-signup-error-{{ ai_gen_id }}"
+          aria-describedby="ai-email-signup-error-{{ ai_gen_id }}
         {% endif %}
         {% if form.posted_successfully? %}
-          aria-describedby="ai-email-signup-success-{{ ai_gen_id }}"
+          aria-describedby="ai-email-signup-success-{{ ai_gen_id }}
         {% endif %}
         placeholder="{{ block.settings.email_placeholder }}"
         required
@@ -152,11 +189,24 @@
 
       <div class="ai-email-signup-button-wrapper-{{ ai_gen_id }}">
         <button type="submit" class="ai-email-signup-button-{{ ai_gen_id }}">
-          {{ block.settings.button_text }}</button>
+          <span class="slide-wrapper">
+            <span class="slide-text">{{ block.settings.button_text }}</span>
+            <span class="slide-text">{{ block.settings.button_text }}</span>
+          </span>
+        </button>
         <div class="ai-email-signup-arrow-{{ ai_gen_id }}">
-          <svg class="ai-email-signup-arrow-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
+          <span class="slide-wrapper">
+            <span class="slide-arrow">
+              <svg class="ai-email-signup-arrow-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </span>
+            <span class="slide-arrow">
+              <svg class="ai-email-signup-arrow-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </span>
+          </span>
         </div>
       </div>
 
@@ -174,6 +224,7 @@
     </div>
   {% endform %}
 </div>
+
 
 {% schema %}
 {
