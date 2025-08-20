@@ -5,6 +5,7 @@
     Hovering over the button or the arrow should create the hover state for both elements, there should be corner radius on all sides of both the button and the arrow
 
 {% enddoc %}
+
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
 {% style %}
@@ -66,7 +67,7 @@
     border-radius: {{ block.settings.button_border_radius }}px;
     cursor: pointer;
     transition: all 0.3s ease;
-    overflow: hidden; /* important for sliding effect */
+    overflow: hidden; /* ensures sliding text is clipped */
   }
 
   .ai-email-signup-button-{{ ai_gen_id }} {
@@ -92,44 +93,39 @@
     background-color: {{ block.settings.button_hover_background_color }};
     color: {{ block.settings.button_hover_text_color }};
   }
-/* Slide animation setup */
-.slide-wrapper {
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-  line-height: 1; /* keeps things tight */
-  height: 100%;   /* inherit the button's height */
-}
 
-.slide-text,
-.slide-arrow {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  transition: transform 0.3s ease;
-}
+  /* Slide animation */
+  .slide-wrapper {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+  }
 
-/* initial states */
-.slide-text:first-child,
-.slide-arrow:first-child {
-  transform: translateY(0);
-}
-.slide-text:last-child,
-.slide-arrow:last-child {
-  transform: translateY(100%);
-}
+  .slide-text,
+  .slide-arrow {
+    display: block;
+    transition: transform 0.3s ease;
+  }
 
-/* hover states */
-.ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:first-child,
-.ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:first-child {
-  transform: translateY(-100%);
-}
-.ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:last-child,
-.ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:last-child {
-  transform: translateY(0);
-}
+  /* initial state */
+  .slide-text:first-child,
+  .slide-arrow:first-child {
+    transform: translateY(0);
+  }
+  .slide-text:last-child,
+  .slide-arrow:last-child {
+    transform: translateY(100%);
+  }
 
+  /* hover animation */
+  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:first-child,
+  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:first-child {
+    transform: translateY(-100%);
+  }
+  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-text:last-child,
+  .ai-email-signup-button-wrapper-{{ ai_gen_id }}:hover .slide-arrow:last-child {
+    transform: translateY(0);
+  }
 
   .ai-email-signup-arrow-icon-{{ ai_gen_id }} {
     width: 20px;
@@ -228,7 +224,6 @@
     </div>
   {% endform %}
 </div>
-
 
 
 
