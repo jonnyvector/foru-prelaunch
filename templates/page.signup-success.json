@@ -296,7 +296,7 @@
         }
       },
       "custom_css": [
-        ".h2 {font-size: 64px;}"
+        ".h2 >p {font-size:64px;}"
       ],
       "name": "t:names.editorial",
       "settings": {
