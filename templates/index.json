@@ -1003,6 +1003,7 @@
             "video_autoplay": true,
             "video_loop": true,
             "alt": "",
+            "battery_saver_image": "shopify://shop_images/image_21_3_0f29fb41-ab77-4e88-b058-f30153647cde.png",
             "custom_width": 100,
             "custom_width_mobile": 100,
             "aspect_ratio": "auto",
@@ -1025,7 +1026,7 @@
       ],
       "custom_css": [
         "deferred-media {height: 100%; min-height: 400px;}",
-        "video{object-position: left;}"
+        "video {object-position: left;}"
       ],
       "name": "t:names.image_with_text",
       "settings": {
