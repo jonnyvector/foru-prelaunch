@@ -55,16 +55,15 @@
 {% endif %}
 
 {% if video != blank %}
-  <div class="{{ cls }}-wrap" style="{{ video_style }}" {{ additional_attributes }}>
+  <div class="video-wrap {{ video_class }}" style="{{ video_style }}" {{ additional_attributes }}>
     {% if video_from_url %}
-      {# External video (iframe) #}
+      {% comment %} External video (iframe) {% endcomment %}
       <iframe
         src="{{ video_src }}"
         class="{{ iframe_class }}"
         allow="autoplay; encrypted-media; picture-in-picture"
         allowfullscreen
         title="{{ video_alt | escape }}"
-        style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none;"
       ></iframe>
     {% else %}
       {% comment %} HTML5 video with poster removal trick {% endcomment %}
@@ -77,7 +76,7 @@
     {% endif %}
     
     {% if fallback_img %}
-      <img class="{{ cls }}-fallback" src="{{ fallback_img | image_url: width: 2000 }}" alt="" loading="lazy" decoding="async">
+      <img class="video-fallback" src="{{ fallback_img | image_url: width: 2000 }}" alt="" loading="lazy" decoding="async">
     {% endif %}
   </div>
 
@@ -151,10 +150,10 @@
 {% endif %}
 
 {% stylesheet %}
-  .{{ cls }}-wrap { position: relative; overflow: hidden; }
-  .{{ cls }}-wrap video,
-  .{{ cls }}-wrap iframe,
-  .{{ cls }}-wrap .{{ cls }}-fallback { 
+  .video-wrap { position: relative; overflow: hidden; }
+  .video-wrap video,
+  .video-wrap iframe,
+  .video-wrap .video-fallback { 
     position: absolute; 
     inset: 0; 
     width: 100%; 
@@ -162,34 +161,34 @@
     object-fit: cover; 
     display: block; 
   }
-  .{{ cls }}-wrap video,
-  .{{ cls }}-wrap iframe { pointer-events: none; }
-  .{{ cls }}-wrap .{{ cls }}-fallback { 
-    opacity: 0; 
+  .video-wrap video,
+  .video-wrap iframe { pointer-events: none; }
+  .video-wrap .video-fallback { 
+    opacity: 0 !important; 
     transition: opacity .2s ease;
     pointer-events: none;
-    visibility: hidden;
+    visibility: hidden !important;
     z-index: -1;
   }
-  .{{ cls }}-wrap.--fallback .{{ cls }}-fallback { 
-    opacity: 1; 
+  .video-wrap.--fallback .video-fallback { 
+    opacity: 1 !important; 
     pointer-events: auto;
-    visibility: visible;
+    visibility: visible !important;
     z-index: 1;
   }
-  .{{ cls }}-wrap.--fallback video,
-  .{{ cls }}-wrap.--fallback iframe { display: none; } /* hides any native play icon */
+  .video-wrap.--fallback video,
+  .video-wrap.--fallback iframe { display: none !important; } /* hides any native play icon */
 
-  /* CSS-based fallback for reduced motion/data preferences - only when explicitly set */
+  /* CSS-based fallback for reduced motion/data preferences */
   @media (prefers-reduced-motion: reduce) {
-    .{{ cls }}-wrap.--conserve-mode .{{ cls }}-fallback { opacity: 1; }
-    .{{ cls }}-wrap.--conserve-mode video,
-    .{{ cls }}-wrap.--conserve-mode iframe { display: none; }
+    .video-wrap .video-fallback { opacity: 1 !important; visibility: visible !important; }
+    .video-wrap video,
+    .video-wrap iframe { display: none !important; }
   }
 
   @media (prefers-reduced-data: reduce) {
-    .{{ cls }}-wrap.--conserve-mode .{{ cls }}-fallback { opacity: 1; }
-    .{{ cls }}-wrap.--conserve-mode video,
-    .{{ cls }}-wrap.--conserve-mode iframe { display: none; }
+    .video-wrap .video-fallback { opacity: 1 !important; visibility: visible !important; }
+    .video-wrap video,
+    .video-wrap iframe { display: none !important; }
   }
 {% endstylesheet %}
