@@ -27,7 +27,14 @@ class DeferredMedia extends Component {
     if (this.hasAttribute('autoplay') && this.dataset.batterySaverFallback === 'true') {
       console.log('Setting up battery saver checks'); // Debug log
       
-      // For iOS devices, use a simple detection method
+      // Check immediately if video conserve mode is active
+      if (this.isVideoConserveMode()) {
+        console.log('Video conserve mode detected immediately, showing fallback'); // Debug log
+        this.showBatterySaverFallback();
+        return;
+      }
+      
+      // For iOS devices, also set up event-based detection as backup
       if (this.isIOSDevice()) {
         console.log('iOS device detected, setting up play button detection'); // Debug log
         this.setupIOSPlayButtonDetection();
@@ -165,7 +172,7 @@ class DeferredMedia extends Component {
     console.log('checkAutoplaySupport called'); // Debug log
     console.log('isMobileDevice:', this.isMobileDevice()); // Debug log
     console.log('isIOSDevice:', this.isIOSDevice()); // Debug log
-    console.log('isBatterySaverLikely:', this.isBatterySaverLikely()); // Debug log
+    console.log('isVideoConserveMode:', this.isVideoConserveMode()); // Debug log
     
     // Be aggressive on iOS devices since battery saver mode is common
     if (this.isIOSDevice()) {
@@ -185,9 +192,9 @@ class DeferredMedia extends Component {
       return;
     }
     
-    // For other mobile devices with battery saver indicators
-    if (this.isMobileDevice() && this.isBatterySaverLikely()) {
-      console.log('Showing fallback due to mobile + battery saver'); // Debug log
+    // For all devices, check video conserve mode
+    if (this.isVideoConserveMode()) {
+      console.log('Video conserve mode detected, showing fallback'); // Debug log
       this.showBatterySaverFallback();
       return;
     }
@@ -353,9 +360,9 @@ class DeferredMedia extends Component {
     // For HTML5 videos, let the native poster handle fallback - no need to override
     // Only handle iframes (external videos) which can't have posters
     if (iframes.length > 0) {
-      // For iframes, show fallback on mobile or when battery saver is detected
-      if (this.isMobileDevice() || this.isBatterySaverLikely()) {
-        console.log('Mobile device or battery saver with iframe, showing fallback'); // Debug log
+      // For iframes, show fallback when video conserve mode is detected
+      if (this.isVideoConserveMode()) {
+        console.log('Video conserve mode with iframe, showing fallback'); // Debug log
         this.showBatterySaverFallback();
       }
     }
@@ -447,30 +454,29 @@ class DeferredMedia extends Component {
   }
 
   /**
-   * Detects if battery saver mode is likely active
+   * Comprehensive video conserve mode detection
+   * Checks multiple signals that indicate user/device prefers reduced resource usage
    */
-  isBatterySaverLikely() {
-    // Check for battery saver indicators
+  isVideoConserveMode() {
+    const m = typeof matchMedia === 'function' ? matchMedia : null;
     const connection = /** @type {any} */ (navigator).connection;
-    if (connection) {
-      // Slow connection might indicate data saver mode
-      if (connection.saveData || 
-          connection.effectiveType === 'slow-2g' || 
-          connection.effectiveType === '2g') {
-        return true;
-      }
-    }
     
-    // Check if device memory is low (potential battery saver indicator)
-    const deviceMemory = /** @type {any} */ (navigator).deviceMemory;
-    if (deviceMemory && deviceMemory <= 2) {
-      return true;
-    }
+    // Check for explicit data saver preference
+    const saveData = !!(connection && connection.saveData);
     
-    // For iOS, only assume battery saver if we have other indicators
-    // (removing blanket iOS detection as it was too aggressive)
+    // Check for slow network connection  
+    const slowNet = !!(connection && /(^|-)2g$/.test(connection.effectiveType || ''));
     
-    return false;
+    // Check for reduced motion preference (often enabled in battery saver)
+    const reduceMotion = !!(m && m('(prefers-reduced-motion: reduce)').matches);
+    
+    // Check for reduced data preference (may be unsupported in some browsers)
+    const reduceData = !!(m && m('(prefers-reduced-data: reduce)').matches);
+    
+    console.log('Video conserve mode checks:', { saveData, slowNet, reduceMotion, reduceData }); // Debug log
+    
+    // Any of these signals is enough to prefer a static image
+    return saveData || slowNet || reduceData || reduceMotion;
   }
 }
 
