@@ -972,6 +972,7 @@
         },
         "image_ffCwYz": {
           "type": "image",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/image_22_1.png",
             "link": "",
@@ -995,7 +996,6 @@
         "video_WfnxwU": {
           "type": "video",
           "name": "t:names.video",
-          "disabled": true,
           "settings": {
             "source": "uploaded",
             "video": "shopify://files/videos/Foru Main Screen (1).mp4",
@@ -1024,7 +1024,7 @@
         "video_WfnxwU"
       ],
       "custom_css": [
-        "deferred-media {height: 100vh;}"
+        "deferred-media {height: 100%; min-height:400px;}"
       ],
       "name": "t:names.image_with_text",
       "settings": {
