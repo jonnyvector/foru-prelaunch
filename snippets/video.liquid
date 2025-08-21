@@ -153,8 +153,8 @@
   .video-wrap { 
     position: relative; 
     overflow: hidden; 
-    background: red; /* Debug: should see red if wrapper has no height */
-    min-height: 400px; /* Debug: ensure wrapper has height */
+    height: 100%;
+    min-height: 400px;
   }
   .video-wrap video,
   .video-wrap iframe { 
@@ -163,9 +163,9 @@
     width: 100%; 
     height: 100%; 
     object-fit: cover; 
+    object-position: left; /* Default positioning */
     display: block; 
     pointer-events: none;
-    background: blue; /* Debug: should see blue if video element exists but no content */
   }
   .video-wrap .video-fallback { 
     position: absolute; 
@@ -178,7 +178,6 @@
     pointer-events: none;
     visibility: hidden;
     z-index: -1;
-    background: green; /* Debug: should see green when fallback shows */
   }
   .video-wrap.--fallback .video-fallback { 
     opacity: 1; 
