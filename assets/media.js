@@ -26,6 +26,13 @@ class DeferredMedia extends Component {
     // Check for battery saver fallback after content loads
     if (this.hasAttribute('autoplay') && this.dataset.batterySaverFallback === 'true') {
       console.log('Setting up battery saver checks'); // Debug log
+      
+      // For iOS devices, check immediately since battery saver is common
+      if (this.isIOSDevice()) {
+        console.log('iOS device detected, checking for battery saver'); // Debug log
+        setTimeout(() => this.checkForIOSBatterySaver(), 500);
+      }
+      
       this.checkAutoplaySupport();
       
       // Also add a simple timer-based check as backup
@@ -157,13 +164,30 @@ class DeferredMedia extends Component {
   async checkAutoplaySupport() {
     console.log('checkAutoplaySupport called'); // Debug log
     console.log('isMobileDevice:', this.isMobileDevice()); // Debug log
+    console.log('isIOSDevice:', this.isIOSDevice()); // Debug log
     console.log('isBatterySaverLikely:', this.isBatterySaverLikely()); // Debug log
     
-    // Only show fallback for external videos on mobile + battery saver
-    // HTML5 videos will use native poster functionality
-    const hasIframes = this.querySelectorAll('iframe').length > 0;
-    if (hasIframes && this.isMobileDevice() && this.isBatterySaverLikely()) {
-      console.log('Showing fallback due to mobile + battery saver + iframe video'); // Debug log
+    // Be aggressive on iOS devices since battery saver mode is common
+    if (this.isIOSDevice()) {
+      console.log('iOS device - showing fallback proactively'); // Debug log
+      // Wait a moment to see if autoplay works, then show fallback if not
+      setTimeout(() => {
+        const videos = this.querySelectorAll('video');
+        let anyPlaying = false;
+        videos.forEach(video => {
+          if (video && !video.paused) anyPlaying = true;
+        });
+        if (!anyPlaying) {
+          console.log('No videos playing on iOS, showing fallback'); // Debug log
+          this.showBatterySaverFallback();
+        }
+      }, 1000);
+      return;
+    }
+    
+    // For other mobile devices with battery saver indicators
+    if (this.isMobileDevice() && this.isBatterySaverLikely()) {
+      console.log('Showing fallback due to mobile + battery saver'); // Debug log
       this.showBatterySaverFallback();
       return;
     }
@@ -253,6 +277,60 @@ class DeferredMedia extends Component {
   }
 
   /**
+   * Check specifically for iOS battery saver mode
+   */
+  checkForIOSBatterySaver() {
+    console.log('Checking for iOS battery saver mode'); // Debug log
+    
+    const videos = Array.from(this.querySelectorAll('video')).filter(v => !v.closest('template'));
+    
+    if (videos.length > 0) {
+      const video = videos[0];
+      
+      // On iOS with battery saver, autoplay videos will show a play button overlay
+      // We can detect this by checking if the video should be playing but isn't
+      if (video && video.autoplay && video.paused) {
+        console.log('iOS battery saver detected - video has autoplay but is paused'); // Debug log
+        this.showBatterySaverFallback();
+        return;
+      }
+      
+      // Also check for low power mode indicators
+      if (this.isLowPowerMode()) {
+        console.log('iOS low power mode detected'); // Debug log
+        this.showBatterySaverFallback();
+        return;
+      }
+    }
+  }
+
+  /**
+   * Detect iOS low power mode indicators
+   */
+  isLowPowerMode() {
+    // Check frame rate - low power mode often reduces animation frame rate
+    let frameCount = 0;
+    let startTime = Date.now();
+    
+    const checkFrameRate = () => {
+      frameCount++;
+      if (Date.now() - startTime < 100) {
+        requestAnimationFrame(checkFrameRate);
+      } else {
+        // If frame rate is very low (< 30fps), might indicate low power mode
+        const fps = frameCount * 10; // approximate fps
+        if (fps < 30) {
+          console.log('Low frame rate detected:', fps, 'fps'); // Debug log
+          return true;
+        }
+      }
+    };
+    
+    requestAnimationFrame(checkFrameRate);
+    return false;
+  }
+
+  /**
    * Simple check to see if any video is actually playing
    */
   checkVideoPlayingState() {
@@ -304,6 +382,13 @@ class DeferredMedia extends Component {
   isMobileDevice() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
            (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+  }
+
+  /**
+   * Detects if device is iOS
+   */
+  isIOSDevice() {
+    return /iPhone|iPad|iPod/i.test(navigator.userAgent);
   }
 
   /**
