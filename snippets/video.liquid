@@ -67,7 +67,7 @@
         style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none;"
       ></iframe>
     {% else %}
-      {# HTML5 video with poster removal trick #}
+      {% comment %} HTML5 video with poster removal trick {% endcomment %}
       {{-
         video
         | video_tag: image_size: '2500x', autoplay: true, loop: true, muted: true, controls: false
@@ -168,10 +168,14 @@
     opacity: 0; 
     transition: opacity .2s ease;
     pointer-events: none;
+    visibility: hidden;
+    z-index: -1;
   }
   .{{ cls }}-wrap.--fallback .{{ cls }}-fallback { 
     opacity: 1; 
     pointer-events: auto;
+    visibility: visible;
+    z-index: 1;
   }
   .{{ cls }}-wrap.--fallback video,
   .{{ cls }}-wrap.--fallback iframe { display: none; } /* hides any native play icon */
