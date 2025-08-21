@@ -201,4 +201,16 @@
   deferred-media[data-battery-saver-fallback="true"] {
     position: relative;
   }
+
+  /* Hide any play button overlays that might appear in battery saver mode */
+  deferred-media[data-battery-saver-fallback="true"] .deferred-media__poster-button,
+  deferred-media[data-battery-saver-fallback="true"] .deferred-media__poster-icon,
+  deferred-media[data-battery-saver-fallback="true"] .video-placeholder-wrapper__poster-icon {
+    display: none !important;
+  }
+
+  /* Ensure battery saver fallback appears above any potential overlays */
+  deferred-media[data-battery-saver-fallback="true"] .battery-saver-fallback {
+    z-index: 10;
+  }
 {% endstylesheet %}
