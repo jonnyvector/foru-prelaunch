@@ -22,6 +22,11 @@ class DeferredMedia extends Component {
     // If we're to use deferred media for images, we will need to run this only when it's not an image type media
     document.addEventListener(ThemeEvents.mediaStartedPlaying, this.pauseMedia.bind(this), { signal });
     window.addEventListener(DialogCloseEvent.eventName, this.pauseMedia.bind(this), { signal });
+    
+    // Check for battery saver fallback after content loads
+    if (this.hasAttribute('autoplay') && this.dataset.batterySaverFallback === 'true') {
+      this.checkAutoplaySupport();
+    }
   }
 
   disconnectedCallback() {
@@ -132,6 +137,68 @@ class DeferredMedia extends Component {
     if (this.getAttribute('data-media-loaded')) {
       this.updatePlayPauseHint(this.isPlaying);
     }
+  }
+
+  /**
+   * Checks if autoplay is supported and shows fallback if not
+   */
+  async checkAutoplaySupport() {
+    // Only check on mobile devices
+    if (!this.isMobileDevice()) return;
+    
+    try {
+      // Create a tiny test video to check autoplay capability
+      const testVideo = document.createElement('video');
+      testVideo.muted = true;
+      testVideo.playsInline = true;
+      testVideo.style.position = 'absolute';
+      testVideo.style.top = '-9999px';
+      testVideo.style.width = '1px';
+      testVideo.style.height = '1px';
+      
+      // Use a data URI for a minimal video
+      testVideo.src = 'data:video/mp4;base64,AAAAIGZ0eXBtcDQyAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAABhtZGF0AAAJ2UQhAAgjEgABQOQM=';
+      
+      document.body.appendChild(testVideo);
+      
+      const playPromise = testVideo.play();
+      if (playPromise && typeof playPromise.then === 'function') {
+        await playPromise;
+      }
+      
+      // If we get here, autoplay works
+      document.body.removeChild(testVideo);
+    } catch (error) {
+      // Autoplay failed - show battery saver fallback
+      this.showBatterySaverFallback();
+      const testVideo = document.querySelector('video[src^="data:video"]');
+      if (testVideo) {
+        document.body.removeChild(testVideo);
+      }
+    }
+  }
+
+  /**
+   * Shows the battery saver fallback image
+   */
+  showBatterySaverFallback() {
+    const fallback = this.querySelector('.battery-saver-fallback');
+    const video = this.querySelector('video, iframe');
+    
+    if (fallback instanceof HTMLElement) {
+      fallback.style.display = 'block';
+      if (video instanceof HTMLElement) {
+        video.style.display = 'none';
+      }
+    }
+  }
+
+  /**
+   * Detects if device is mobile
+   */
+  isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+           (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
   }
 }
 

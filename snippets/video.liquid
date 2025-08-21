@@ -139,9 +139,15 @@
     class="{{ video_class }}"
     style="{{ video_style }}"
     autoplay
+    data-battery-saver-fallback="{{ battery_saver_image != blank }}"
     {{ additional_attributes }}
   >
-    {# No poster/overlay rendered at all #}
+    {# Battery saver fallback image (hidden by default) #}
+    {% if battery_saver_image != blank %}
+      <div class="battery-saver-fallback" style="display: none;">
+        {{ battery_saver_image | image_tag: loading: 'lazy', sizes: sizes, widths: widths }}
+      </div>
+    {% endif %}
 
     <template>
       {% if video_from_url %}
@@ -173,5 +179,26 @@
   .deferred-media iframe,
   .deferred-media video {
     pointer-events: none;
+  }
+
+  /* Battery saver fallback styling */
+  .battery-saver-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .battery-saver-fallback img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Ensure deferred-media has relative positioning */
+  deferred-media[data-battery-saver-fallback="true"] {
+    position: relative;
   }
 {% endstylesheet %}

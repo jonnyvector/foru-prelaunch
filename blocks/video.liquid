@@ -16,6 +16,7 @@
     video_loop: block_settings.video_loop,
     video_style: video_style,
     video_preview_image: block_settings.video.preview_image,
+    battery_saver_image: block_settings.battery_saver_image,
     additional_attributes: block.shopify_attributes,
     section_id: section.id
   %}
@@ -28,6 +29,7 @@
     video_style: video_style,
     video_alt: block_settings.alt,
     video_preview_image: block_settings.cover_image,
+    battery_saver_image: block_settings.battery_saver_image,
     additional_attributes: block.shopify_attributes,
     section_id: section.id
   %}
@@ -99,6 +101,12 @@
       "label": "t:settings.video_alt_text",
       "info": "t:info.video_alt_text",
       "visible_if": "{{ block.settings.source == 'url' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "battery_saver_image",
+      "label": "Battery saver fallback image",
+      "info": "Image shown on mobile when battery saving mode prevents video autoplay"
     },
     {
       "type": "header",
