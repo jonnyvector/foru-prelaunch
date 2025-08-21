@@ -263,4 +263,16 @@
       name: '{{ template }}',
     },
   };
+
+  // Video conserve mode detection - checks multiple signals for reduced resource usage
+  window.videoConserveMode = (function () {
+    const m = typeof matchMedia === 'function' ? matchMedia : null;
+    const saveData = !!(navigator.connection && navigator.connection.saveData);
+    const slowNet = !!(navigator.connection && /(^|-)2g$/.test(navigator.connection.effectiveType || ''));
+    const reduceMotion = !!(m && m('(prefers-reduced-motion: reduce)').matches);
+    const reduceData = !!(m && m('(prefers-reduced-data: reduce)').matches); // may be unsupported
+
+    // Any of these signals is enough to prefer a static image
+    return saveData || slowNet || reduceData || reduceMotion;
+  })();
 </script>
