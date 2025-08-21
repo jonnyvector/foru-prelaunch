@@ -35,8 +35,15 @@
   assign video_loop = true
   assign disable_controls = true
 
-  # No poster → no overlay/play button
-  assign video_preview_image = blank
+  # Use battery saver image as poster if available, otherwise use original preview image
+  # If neither is available, no poster (background mode)
+  if battery_saver_image != blank
+    assign poster_image = battery_saver_image
+  elsif video_preview_image != blank
+    assign poster_image = video_preview_image
+  else
+    assign poster_image = blank
+  endif
 
   # Responsive defaults
   assign media_width_desktop = 100 | divided_by: 2 | append: 'vw'
@@ -128,7 +135,8 @@
           loop: true,
           muted: true,
           playsinline: true,
-          controls: false
+          controls: false,
+          poster: poster_image
       }}
     {% endif %}
   {% endcapture %}
@@ -142,8 +150,8 @@
     data-battery-saver-fallback="{{ battery_saver_image != blank }}"
     {{ additional_attributes }}
   >
-    {# Battery saver fallback image (hidden by default) #}
-    {% if battery_saver_image != blank %}
+    {# For external videos (iframe), show battery saver fallback div since iframes can't have posters #}
+    {% if video_from_url and battery_saver_image != blank %}
       <div class="battery-saver-fallback" style="display: none;">
         {{ battery_saver_image | image_tag: loading: 'lazy', sizes: sizes, widths: widths }}
       </div>

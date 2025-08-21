@@ -159,9 +159,11 @@ class DeferredMedia extends Component {
     console.log('isMobileDevice:', this.isMobileDevice()); // Debug log
     console.log('isBatterySaverLikely:', this.isBatterySaverLikely()); // Debug log
     
-    // On mobile devices with battery saver, be more aggressive about showing fallback
-    if (this.isMobileDevice() && this.isBatterySaverLikely()) {
-      console.log('Showing fallback due to mobile + battery saver'); // Debug log
+    // Only show fallback for external videos on mobile + battery saver
+    // HTML5 videos will use native poster functionality
+    const hasIframes = this.querySelectorAll('iframe').length > 0;
+    if (hasIframes && this.isMobileDevice() && this.isBatterySaverLikely()) {
+      console.log('Showing fallback due to mobile + battery saver + iframe video'); // Debug log
       this.showBatterySaverFallback();
       return;
     }
@@ -259,24 +261,12 @@ class DeferredMedia extends Component {
     
     console.log('Found videos:', videos.length, 'iframes:', iframes.length); // Debug log
     
-    // If we have videos, check if any are playing
-    if (videos.length > 0) {
-      let anyPlaying = false;
-      videos.forEach(video => {
-        if (video && !video.paused && !video.ended && video.readyState > 2) {
-          anyPlaying = true;
-        }
-        console.log('Video state:', video.paused, video.ended, video.readyState); // Debug log
-      });
-      
-      if (!anyPlaying) {
-        console.log('No videos playing, showing fallback'); // Debug log
-        this.showBatterySaverFallback();
-      }
-    } else if (iframes.length > 0) {
-      // For iframes, assume they need fallback on mobile
-      if (this.isMobileDevice()) {
-        console.log('Mobile device with iframe, showing fallback'); // Debug log
+    // For HTML5 videos, let the native poster handle fallback - no need to override
+    // Only handle iframes (external videos) which can't have posters
+    if (iframes.length > 0) {
+      // For iframes, show fallback on mobile or when battery saver is detected
+      if (this.isMobileDevice() || this.isBatterySaverLikely()) {
+        console.log('Mobile device or battery saver with iframe, showing fallback'); // Debug log
         this.showBatterySaverFallback();
       }
     }
