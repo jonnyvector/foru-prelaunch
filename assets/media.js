@@ -25,7 +25,14 @@ class DeferredMedia extends Component {
     
     // Check for battery saver fallback after content loads
     if (this.hasAttribute('autoplay') && this.dataset.batterySaverFallback === 'true') {
+      console.log('Setting up battery saver checks'); // Debug log
       this.checkAutoplaySupport();
+      
+      // Also add a simple timer-based check as backup
+      setTimeout(() => {
+        console.log('Timer-based fallback check'); // Debug log
+        this.checkVideoPlayingState();
+      }, 2000);
     }
     
     // Also check when actual video content loads using MutationObserver
@@ -148,8 +155,13 @@ class DeferredMedia extends Component {
    * Checks if autoplay is supported and shows fallback if not
    */
   async checkAutoplaySupport() {
+    console.log('checkAutoplaySupport called'); // Debug log
+    console.log('isMobileDevice:', this.isMobileDevice()); // Debug log
+    console.log('isBatterySaverLikely:', this.isBatterySaverLikely()); // Debug log
+    
     // On mobile devices with battery saver, be more aggressive about showing fallback
     if (this.isMobileDevice() && this.isBatterySaverLikely()) {
+      console.log('Showing fallback due to mobile + battery saver'); // Debug log
       this.showBatterySaverFallback();
       return;
     }
@@ -239,18 +251,61 @@ class DeferredMedia extends Component {
   }
 
   /**
+   * Simple check to see if any video is actually playing
+   */
+  checkVideoPlayingState() {
+    const videos = Array.from(this.querySelectorAll('video')).filter(v => !v.closest('template'));
+    const iframes = Array.from(this.querySelectorAll('iframe')).filter(i => !i.closest('template'));
+    
+    console.log('Found videos:', videos.length, 'iframes:', iframes.length); // Debug log
+    
+    // If we have videos, check if any are playing
+    if (videos.length > 0) {
+      let anyPlaying = false;
+      videos.forEach(video => {
+        if (video && !video.paused && !video.ended && video.readyState > 2) {
+          anyPlaying = true;
+        }
+        console.log('Video state:', video.paused, video.ended, video.readyState); // Debug log
+      });
+      
+      if (!anyPlaying) {
+        console.log('No videos playing, showing fallback'); // Debug log
+        this.showBatterySaverFallback();
+      }
+    } else if (iframes.length > 0) {
+      // For iframes, assume they need fallback on mobile
+      if (this.isMobileDevice()) {
+        console.log('Mobile device with iframe, showing fallback'); // Debug log
+        this.showBatterySaverFallback();
+      }
+    }
+  }
+
+  /**
    * Shows the battery saver fallback image
    */
   showBatterySaverFallback() {
-    const fallback = this.querySelector('.battery-saver-fallback');
-    const video = this.querySelector('video, iframe');
+    console.log('showBatterySaverFallback called'); // Debug log
     
+    // Add battery-saver-active class to trigger CSS
+    this.classList.add('battery-saver-active');
+    
+    const fallback = this.querySelector('.battery-saver-fallback');
     if (fallback instanceof HTMLElement) {
+      console.log('Fallback element found, showing it'); // Debug log
       fallback.style.display = 'block';
+    } else {
+      console.log('No fallback element found'); // Debug log
+    }
+    
+    // Hide all videos and iframes
+    const videos = this.querySelectorAll('video, iframe');
+    videos.forEach(video => {
       if (video instanceof HTMLElement) {
         video.style.display = 'none';
       }
-    }
+    });
   }
 
   /**
@@ -282,10 +337,8 @@ class DeferredMedia extends Component {
       return true;
     }
     
-    // iOS devices in low power mode often have reduced performance
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      return true; // Be conservative for iOS devices
-    }
+    // For iOS, only assume battery saver if we have other indicators
+    // (removing blanket iOS detection as it was too aggressive)
     
     return false;
   }

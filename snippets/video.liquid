@@ -188,7 +188,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: 999;
+    background: #000;
+    display: none;
   }
 
   .battery-saver-fallback img {
@@ -202,15 +204,21 @@
     position: relative;
   }
 
+  /* When battery saver is active, show fallback and hide video */
+  deferred-media[data-battery-saver-fallback="true"].battery-saver-active .battery-saver-fallback {
+    display: block !important;
+    z-index: 9999;
+  }
+
+  deferred-media[data-battery-saver-fallback="true"].battery-saver-active video,
+  deferred-media[data-battery-saver-fallback="true"].battery-saver-active iframe {
+    display: none !important;
+  }
+
   /* Hide any play button overlays that might appear in battery saver mode */
   deferred-media[data-battery-saver-fallback="true"] .deferred-media__poster-button,
   deferred-media[data-battery-saver-fallback="true"] .deferred-media__poster-icon,
   deferred-media[data-battery-saver-fallback="true"] .video-placeholder-wrapper__poster-icon {
     display: none !important;
-  }
-
-  /* Ensure battery saver fallback appears above any potential overlays */
-  deferred-media[data-battery-saver-fallback="true"] .battery-saver-fallback {
-    z-index: 10;
   }
 {% endstylesheet %}
