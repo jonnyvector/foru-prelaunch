@@ -237,4 +237,40 @@
   deferred-media[data-battery-saver-fallback="true"] .video-placeholder-wrapper__poster-icon {
     display: none !important;
   }
+
+  /* CSS-based battery saver detection using media queries */
+  @media (prefers-reduced-motion: reduce) {
+    deferred-media[data-battery-saver-fallback="true"] .battery-saver-fallback {
+      display: block !important;
+      z-index: 99999 !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: #000 !important;
+    }
+    
+    deferred-media[data-battery-saver-fallback="true"] video {
+      display: none !important;
+    }
+  }
+
+  /* Also try with reduced data preference */
+  @media (prefers-reduced-data: reduce) {
+    deferred-media[data-battery-saver-fallback="true"] .battery-saver-fallback {
+      display: block !important;
+      z-index: 99999 !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: #000 !important;
+    }
+    
+    deferred-media[data-battery-saver-fallback="true"] video {
+      display: none !important;
+    }
+  }
 {% endstylesheet %}

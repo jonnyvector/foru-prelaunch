@@ -27,24 +27,10 @@ class DeferredMedia extends Component {
     if (this.hasAttribute('autoplay') && this.dataset.batterySaverFallback === 'true') {
       console.log('Setting up battery saver checks'); // Debug log
       
-      // For iOS devices, be very aggressive - show fallback immediately
+      // For iOS devices, use a simple detection method
       if (this.isIOSDevice()) {
-        console.log('iOS device detected, showing fallback proactively'); // Debug log
-        // Show fallback immediately for iOS, then check if video actually plays
-        this.showBatterySaverFallback();
-        
-        // Check if video starts playing and hide fallback if so
-        setTimeout(() => {
-          const videos = this.querySelectorAll('video');
-          let anyPlaying = false;
-          videos.forEach(video => {
-            if (video && !video.paused && video.currentTime > 0) anyPlaying = true;
-          });
-          if (anyPlaying) {
-            console.log('Video playing on iOS, hiding fallback'); // Debug log
-            this.hideBatterySaverFallback();
-          }
-        }, 1500);
+        console.log('iOS device detected, setting up play button detection'); // Debug log
+        this.setupIOSPlayButtonDetection();
       }
       
       this.checkAutoplaySupport();
@@ -291,31 +277,42 @@ class DeferredMedia extends Component {
   }
 
   /**
-   * Check specifically for iOS battery saver mode
+   * Simple iOS play button detection
    */
-  checkForIOSBatterySaver() {
-    console.log('Checking for iOS battery saver mode'); // Debug log
+  setupIOSPlayButtonDetection() {
+    console.log('Setting up iOS play button detection'); // Debug log
     
-    const videos = Array.from(this.querySelectorAll('video')).filter(v => !v.closest('template'));
-    
-    if (videos.length > 0) {
-      const video = videos[0];
+    // Wait for video elements to load
+    setTimeout(() => {
+      const videos = Array.from(this.querySelectorAll('video')).filter(v => !v.closest('template'));
       
-      // On iOS with battery saver, autoplay videos will show a play button overlay
-      // We can detect this by checking if the video should be playing but isn't
-      if (video && video.autoplay && video.paused) {
-        console.log('iOS battery saver detected - video has autoplay but is paused'); // Debug log
-        this.showBatterySaverFallback();
-        return;
+      if (videos.length > 0) {
+        const video = videos[0];
+        console.log('Monitoring video element:', video); // Debug log
+        
+        // Listen for events that indicate the video is blocked
+        video.addEventListener('pause', () => {
+          console.log('Video paused event - checking if blocked'); // Debug log
+          if (video.autoplay && video.currentTime === 0) {
+            console.log('Video blocked by iOS - showing fallback'); // Debug log
+            this.showBatterySaverFallback();
+          }
+        });
+        
+        video.addEventListener('suspend', () => {
+          console.log('Video suspend event - showing fallback'); // Debug log
+          this.showBatterySaverFallback();
+        });
+        
+        // Check after a short delay if video is playing
+        setTimeout(() => {
+          if (video.paused && video.currentTime === 0) {
+            console.log('Video not playing after delay - showing fallback'); // Debug log
+            this.showBatterySaverFallback();
+          }
+        }, 1000);
       }
-      
-      // Also check for low power mode indicators
-      if (this.isLowPowerMode()) {
-        console.log('iOS low power mode detected'); // Debug log
-        this.showBatterySaverFallback();
-        return;
-      }
-    }
+    }, 100);
   }
 
   /**
