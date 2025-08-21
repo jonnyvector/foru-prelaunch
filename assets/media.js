@@ -148,7 +148,11 @@ class DeferredMedia extends Component {
    * Checks if autoplay is supported and shows fallback if not
    */
   async checkAutoplaySupport() {
-    // Check on all devices since many browsers block autoplay
+    // On mobile devices with battery saver, be more aggressive about showing fallback
+    if (this.isMobileDevice() && this.isBatterySaverLikely()) {
+      this.showBatterySaverFallback();
+      return;
+    }
     
     try {
       // Create a tiny test video to check autoplay capability
@@ -190,7 +194,16 @@ class DeferredMedia extends Component {
       for (const mutation of mutations) {
         if (mutation.type === 'childList') {
           for (const node of mutation.addedNodes) {
-            if (node instanceof Element && (node.tagName === 'VIDEO' || node.tagName === 'IFRAME')) {
+            if (node instanceof Element && node.tagName === 'VIDEO') {
+              // Add error event listener to catch autoplay failures
+              node.addEventListener('error', () => this.showBatterySaverFallback());
+              node.addEventListener('abort', () => this.showBatterySaverFallback());
+              
+              // Also check playback state after a delay
+              setTimeout(() => this.checkActualVideoAutoplay(), 1000);
+              observer.disconnect();
+              return;
+            } else if (node instanceof Element && node.tagName === 'IFRAME') {
               setTimeout(() => this.checkActualVideoAutoplay(), 1000);
               observer.disconnect();
               return;
@@ -207,17 +220,21 @@ class DeferredMedia extends Component {
    * Checks if the actual loaded video is playing (for cases where test video passes but real video fails)
    */
   checkActualVideoAutoplay() {
-    const video = this.querySelector('video');
-    const iframe = this.querySelector('iframe');
+    // Get all videos, excluding the template ones
+    const videos = Array.from(this.querySelectorAll('video')).filter(v => !v.closest('template'));
+    const iframes = Array.from(this.querySelectorAll('iframe')).filter(i => !i.closest('template'));
     
-    if (video) {
+    if (videos.length > 0) {
+      const video = videos[0]; // Get the first non-template video
       // For HTML5 video, check if it's actually playing
-      if (video.paused || video.ended || video.readyState < 3) {
+      if (video && (video.paused || video.ended || video.readyState < 3)) {
         this.showBatterySaverFallback();
       }
-    } else if (iframe) {
-      // For external videos (YouTube/Vimeo), we can't easily detect playback
-      // So we rely on the initial test video check
+    } else if (iframes.length > 0) {
+      // For external videos, show fallback immediately on mobile devices with battery saver
+      if (this.isMobileDevice()) {
+        this.showBatterySaverFallback();
+      }
     }
   }
 
@@ -242,6 +259,35 @@ class DeferredMedia extends Component {
   isMobileDevice() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
            (window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+  }
+
+  /**
+   * Detects if battery saver mode is likely active
+   */
+  isBatterySaverLikely() {
+    // Check for battery saver indicators
+    const connection = /** @type {any} */ (navigator).connection;
+    if (connection) {
+      // Slow connection might indicate data saver mode
+      if (connection.saveData || 
+          connection.effectiveType === 'slow-2g' || 
+          connection.effectiveType === '2g') {
+        return true;
+      }
+    }
+    
+    // Check if device memory is low (potential battery saver indicator)
+    const deviceMemory = /** @type {any} */ (navigator).deviceMemory;
+    if (deviceMemory && deviceMemory <= 2) {
+      return true;
+    }
+    
+    // iOS devices in low power mode often have reduced performance
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      return true; // Be conservative for iOS devices
+    }
+    
+    return false;
   }
 }
 
