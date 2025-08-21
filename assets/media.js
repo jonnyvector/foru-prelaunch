@@ -27,10 +27,24 @@ class DeferredMedia extends Component {
     if (this.hasAttribute('autoplay') && this.dataset.batterySaverFallback === 'true') {
       console.log('Setting up battery saver checks'); // Debug log
       
-      // For iOS devices, check immediately since battery saver is common
+      // For iOS devices, be very aggressive - show fallback immediately
       if (this.isIOSDevice()) {
-        console.log('iOS device detected, checking for battery saver'); // Debug log
-        setTimeout(() => this.checkForIOSBatterySaver(), 500);
+        console.log('iOS device detected, showing fallback proactively'); // Debug log
+        // Show fallback immediately for iOS, then check if video actually plays
+        this.showBatterySaverFallback();
+        
+        // Check if video starts playing and hide fallback if so
+        setTimeout(() => {
+          const videos = this.querySelectorAll('video');
+          let anyPlaying = false;
+          videos.forEach(video => {
+            if (video && !video.paused && video.currentTime > 0) anyPlaying = true;
+          });
+          if (anyPlaying) {
+            console.log('Video playing on iOS, hiding fallback'); // Debug log
+            this.hideBatterySaverFallback();
+          }
+        }, 1500);
       }
       
       this.checkAutoplaySupport();
@@ -355,23 +369,67 @@ class DeferredMedia extends Component {
    */
   showBatterySaverFallback() {
     console.log('showBatterySaverFallback called'); // Debug log
+    console.log('Element classes before:', this.className); // Debug log
     
     // Add battery-saver-active class to trigger CSS
     this.classList.add('battery-saver-active');
     
+    console.log('Element classes after:', this.className); // Debug log
+    
     const fallback = this.querySelector('.battery-saver-fallback');
     if (fallback instanceof HTMLElement) {
       console.log('Fallback element found, showing it'); // Debug log
+      console.log('Fallback element style before:', fallback.style.display); // Debug log
+      
+      // Force show with inline styles as backup
       fallback.style.display = 'block';
+      fallback.style.position = 'absolute';
+      fallback.style.top = '0';
+      fallback.style.left = '0';
+      fallback.style.width = '100%';
+      fallback.style.height = '100%';
+      fallback.style.zIndex = '99999';
+      fallback.style.background = '#000';
+      
+      console.log('Fallback element style after:', fallback.style.display); // Debug log
     } else {
       console.log('No fallback element found'); // Debug log
     }
     
-    // Hide all videos and iframes
+    // Hide all videos and iframes with multiple methods
+    const videos = this.querySelectorAll('video, iframe');
+    console.log('Found videos/iframes to hide:', videos.length); // Debug log
+    videos.forEach((video, index) => {
+      if (video instanceof HTMLElement) {
+        console.log(`Hiding video/iframe ${index}`); // Debug log
+        video.style.display = 'none';
+        video.style.visibility = 'hidden';
+        video.style.opacity = '0';
+      }
+    });
+  }
+
+  /**
+   * Hides the battery saver fallback image
+   */
+  hideBatterySaverFallback() {
+    console.log('hideBatterySaverFallback called'); // Debug log
+    
+    // Remove battery-saver-active class
+    this.classList.remove('battery-saver-active');
+    
+    const fallback = this.querySelector('.battery-saver-fallback');
+    if (fallback instanceof HTMLElement) {
+      fallback.style.display = 'none';
+    }
+    
+    // Show videos again
     const videos = this.querySelectorAll('video, iframe');
     videos.forEach(video => {
       if (video instanceof HTMLElement) {
-        video.style.display = 'none';
+        video.style.display = '';
+        video.style.visibility = '';
+        video.style.opacity = '';
       }
     });
   }
