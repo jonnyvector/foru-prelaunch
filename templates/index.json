@@ -972,6 +972,7 @@
         },
         "image_ffCwYz": {
           "type": "image",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/image_22_1.png",
             "link": "",
@@ -991,13 +992,40 @@
             "padding-inline-end": 0
           },
           "blocks": {}
+        },
+        "video_WfnxwU": {
+          "type": "video",
+          "name": "t:names.video",
+          "settings": {
+            "source": "uploaded",
+            "video": "shopify://files/videos/Foru Main Screen (1).mp4",
+            "video_url": "",
+            "video_autoplay": true,
+            "video_loop": true,
+            "alt": "",
+            "custom_width": 100,
+            "custom_width_mobile": 100,
+            "aspect_ratio": "auto",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
         }
       },
       "block_order": [
         "group_x7LfMd",
-        "image_ffCwYz"
+        "image_ffCwYz",
+        "video_WfnxwU"
       ],
-      "custom_css": [],
+      "custom_css": [
+        "deferred-media{height:100vh;}"
+      ],
       "name": "t:names.image_with_text",
       "settings": {
         "content_direction": "row",
