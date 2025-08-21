@@ -1024,7 +1024,8 @@
         "video_WfnxwU"
       ],
       "custom_css": [
-        "deferred-media {height: 100%; min-height:400px;}"
+        "deferred-media {height: 100%; min-height: 400px;}",
+        "video{object-position: left;}"
       ],
       "name": "t:names.image_with_text",
       "settings": {
