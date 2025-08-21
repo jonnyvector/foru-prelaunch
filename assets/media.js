@@ -27,6 +27,11 @@ class DeferredMedia extends Component {
     if (this.hasAttribute('autoplay') && this.dataset.batterySaverFallback === 'true') {
       this.checkAutoplaySupport();
     }
+    
+    // Also check when actual video content loads using MutationObserver
+    if (this.hasAttribute('autoplay') && this.dataset.batterySaverFallback === 'true') {
+      this.observeVideoLoad();
+    }
   }
 
   disconnectedCallback() {
@@ -143,8 +148,7 @@ class DeferredMedia extends Component {
    * Checks if autoplay is supported and shows fallback if not
    */
   async checkAutoplaySupport() {
-    // Only check on mobile devices
-    if (!this.isMobileDevice()) return;
+    // Check on all devices since many browsers block autoplay
     
     try {
       // Create a tiny test video to check autoplay capability
@@ -175,6 +179,45 @@ class DeferredMedia extends Component {
       if (testVideo) {
         document.body.removeChild(testVideo);
       }
+    }
+  }
+
+  /**
+   * Observes when video content is loaded and checks autoplay
+   */
+  observeVideoLoad() {
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList') {
+          for (const node of mutation.addedNodes) {
+            if (node instanceof Element && (node.tagName === 'VIDEO' || node.tagName === 'IFRAME')) {
+              setTimeout(() => this.checkActualVideoAutoplay(), 1000);
+              observer.disconnect();
+              return;
+            }
+          }
+        }
+      }
+    });
+    
+    observer.observe(this, { childList: true, subtree: true });
+  }
+
+  /**
+   * Checks if the actual loaded video is playing (for cases where test video passes but real video fails)
+   */
+  checkActualVideoAutoplay() {
+    const video = this.querySelector('video');
+    const iframe = this.querySelector('iframe');
+    
+    if (video) {
+      // For HTML5 video, check if it's actually playing
+      if (video.paused || video.ended || video.readyState < 3) {
+        this.showBatterySaverFallback();
+      }
+    } else if (iframe) {
+      // For external videos (YouTube/Vimeo), we can't easily detect playback
+      // So we rely on the initial test video check
     }
   }
 
