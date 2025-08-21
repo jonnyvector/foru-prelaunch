@@ -87,8 +87,11 @@
     const v = wrap?.querySelector('video');
     const iframe = wrap?.querySelector('iframe');
 
+    console.log('Video conserve mode:', window.videoConserveMode); // Debug
+
     // If we've already decided to conserve, fallback immediately
     if (window.videoConserveMode) { 
+      console.log('Showing fallback due to conserve mode'); // Debug
       wrap.classList.add('--fallback'); 
       if (v) v.remove(); 
       if (iframe) iframe.remove();
@@ -97,10 +100,16 @@
 
     // Handle HTML5 video
     if (v) {
+      console.log('Setting up HTML5 video'); // Debug
       v.muted = true;
       v.playsInline = true;
 
-      const tryPlay = () => v.play().catch(() => { /* ignore */ });
+      const tryPlay = () => {
+        console.log('Trying to play video'); // Debug
+        return v.play().catch((error) => { 
+          console.log('Video play failed:', error); // Debug
+        });
+      };
 
       // Try as early as possible, and on visibility return
       if (document.readyState === 'complete') tryPlay();
@@ -111,7 +120,11 @@
 
       // If still paused shortly after, assume OS blocked autoplay -> fallback
       setTimeout(() => { 
-        if (v.paused) wrap.classList.add('--fallback'); 
+        console.log('Checking video state after timeout. Paused:', v.paused); // Debug
+        if (v.paused) {
+          console.log('Video still paused, showing fallback'); // Debug
+          wrap.classList.add('--fallback'); 
+        }
       }, 700);
     }
 
@@ -153,22 +166,26 @@
   .{{ cls }}-wrap iframe { pointer-events: none; }
   .{{ cls }}-wrap .{{ cls }}-fallback { 
     opacity: 0; 
-    transition: opacity .2s ease; 
+    transition: opacity .2s ease;
+    pointer-events: none;
   }
-  .{{ cls }}-wrap.--fallback .{{ cls }}-fallback { opacity: 1; }
+  .{{ cls }}-wrap.--fallback .{{ cls }}-fallback { 
+    opacity: 1; 
+    pointer-events: auto;
+  }
   .{{ cls }}-wrap.--fallback video,
   .{{ cls }}-wrap.--fallback iframe { display: none; } /* hides any native play icon */
 
-  /* CSS-based fallback for reduced motion/data preferences */
+  /* CSS-based fallback for reduced motion/data preferences - only when explicitly set */
   @media (prefers-reduced-motion: reduce) {
-    .{{ cls }}-wrap .{{ cls }}-fallback { opacity: 1; }
-    .{{ cls }}-wrap video,
-    .{{ cls }}-wrap iframe { display: none; }
+    .{{ cls }}-wrap.--conserve-mode .{{ cls }}-fallback { opacity: 1; }
+    .{{ cls }}-wrap.--conserve-mode video,
+    .{{ cls }}-wrap.--conserve-mode iframe { display: none; }
   }
 
   @media (prefers-reduced-data: reduce) {
-    .{{ cls }}-wrap .{{ cls }}-fallback { opacity: 1; }
-    .{{ cls }}-wrap video,
-    .{{ cls }}-wrap iframe { display: none; }
+    .{{ cls }}-wrap.--conserve-mode .{{ cls }}-fallback { opacity: 1; }
+    .{{ cls }}-wrap.--conserve-mode video,
+    .{{ cls }}-wrap.--conserve-mode iframe { display: none; }
   }
 {% endstylesheet %}
