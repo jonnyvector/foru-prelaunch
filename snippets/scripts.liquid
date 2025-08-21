@@ -272,7 +272,19 @@
     const reduceMotion = !!(m && m('(prefers-reduced-motion: reduce)').matches);
     const reduceData = !!(m && m('(prefers-reduced-data: reduce)').matches); // may be unsupported
 
+    // Debug logging to see which signals are triggering
+    console.log('Video conserve mode signals:', {
+      saveData,
+      slowNet,
+      reduceMotion,
+      reduceData,
+      effectiveType: navigator.connection?.effectiveType,
+      userAgent: navigator.userAgent.substring(0, 100)
+    });
+
     // Any of these signals is enough to prefer a static image
-    return saveData || slowNet || reduceData || reduceMotion;
+    const result = saveData || slowNet || reduceData || reduceMotion;
+    console.log('Final videoConserveMode result:', result);
+    return result;
   })();
 </script>
