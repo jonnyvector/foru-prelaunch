@@ -837,6 +837,7 @@
                 "icon_8YDyDn": {
                   "type": "icon",
                   "name": "t:names.icon",
+                  "disabled": true,
                   "settings": {
                     "icon": "price_tag",
                     "image_upload": "shopify://shop_images/mdi_youtube.svg",
@@ -849,6 +850,7 @@
                 "icon_KY6pnn": {
                   "type": "icon",
                   "name": "t:names.icon",
+                  "disabled": true,
                   "settings": {
                     "icon": "price_tag",
                     "image_upload": "shopify://shop_images/ic_baseline-facebook.svg",
@@ -1025,7 +1027,7 @@
       ],
       "custom_css": [
         "deferred-media {height: 100%; min-height: 400px;}",
-        "video{object-position: left;}"
+        "video {object-position: left;}"
       ],
       "name": "t:names.image_with_text",
       "settings": {
